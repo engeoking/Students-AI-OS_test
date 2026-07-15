@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+  analyzeProgressFromText,
   buildMockStudySession,
   createReviewItemsFromQuestion,
+  generateExamQuestions,
   groupReviewItemsByBucket,
   recommendAi,
 } from "@/lib/student-os";
@@ -40,5 +42,18 @@ describe("student-os domain logic", () => {
     expect(grouped.today).toHaveLength(1);
     expect(grouped.beforeExam).toHaveLength(1);
     expect(grouped.tomorrow).toEqual([]);
+  });
+
+  it("generates graph and diagram style questions for math and science", () => {
+    const mathProgress = analyzeProgressFromText("함수 그래프와 도형 문제를 배웠어요", "수학");
+    const scienceProgress = analyzeProgressFromText("운동 그래프와 힘의 방향을 배웠어요", "과학");
+
+    const mathQuestions = generateExamQuestions("수학", mathProgress);
+    const scienceQuestions = generateExamQuestions("과학", scienceProgress);
+
+    expect(mathQuestions.some((question) => question.concept.includes("그래프"))).toBe(true);
+    expect(mathQuestions.some((question) => question.concept.includes("도형"))).toBe(true);
+    expect(scienceQuestions.some((question) => question.prompt.includes("그래프"))).toBe(true);
+    expect(scienceQuestions.some((question) => question.prompt.includes("도식"))).toBe(true);
   });
 });

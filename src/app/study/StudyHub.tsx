@@ -1,12 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { BarChart3, CheckCircle2, ClipboardCheck, ImageUp, Save } from "lucide-react";
+import { BarChart3, CheckCircle2, ClipboardCheck, ImageUp, LockKeyhole, MessageCircle, Save, Send } from "lucide-react";
 import { readLearningRuns, saveLearningRun } from "@/lib/learning-storage";
 import { readProfileOrMock } from "@/lib/profile-storage";
 import {
   analyzeProgressFromUpload,
   analyzeProgressFromText,
+  aiLabelsBySubject,
   buildWeaknessReport,
   createLearningRun,
   generateExamQuestions,
@@ -14,6 +15,11 @@ import {
   gradePracticeAnswers,
 } from "@/lib/student-os";
 import type { GradedAnswer, LearningRun, PracticeQuestion, ProgressAnalysis, WeaknessReport } from "@/lib/types";
+
+type ChatMessage = {
+  question: string;
+  answer: string;
+};
 
 export function StudyHub() {
   const [profile] = useState(() => readProfileOrMock());
@@ -26,8 +32,12 @@ export function StudyHub() {
   const [gradedAnswers, setGradedAnswers] = useState<GradedAnswer[]>([]);
   const [showWeaknessReport, setShowWeaknessReport] = useState(false);
   const [savedRuns, setSavedRuns] = useState<LearningRun[]>(() => readLearningRuns());
+  const [chatQuestion, setChatQuestion] = useState("");
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
   const correctCount = gradedAnswers.filter((answer) => answer.isCorrect).length;
+  const llmLabel = `${aiLabelsBySubject[selectedSubject] ?? "Study Coach"} LLM`;
+  const isPracticeLocked = questions.length > 0 && gradedAnswers.length === 0;
   const weaknessReport = useMemo(
     () => (showWeaknessReport && gradedAnswers.length > 0
       ? buildWeaknessReport(profile, selectedSubject, gradedAnswers)
@@ -46,6 +56,8 @@ export function StudyHub() {
     setAnswers({});
     setGradedAnswers([]);
     setShowWeaknessReport(false);
+    setChatQuestion("");
+    setChatMessages([]);
   }
 
   function handleImageUpload(event: React.ChangeEvent<HTMLInputElement>) {
@@ -114,6 +126,22 @@ export function StudyHub() {
     persistRun(progress, questions, gradedAnswers, nextReport);
   }
 
+  function askLlm() {
+    const question = chatQuestion.trim();
+    if (!question || isPracticeLocked) {
+      return;
+    }
+
+    setChatMessages((current) => [
+      ...current,
+      {
+        question,
+        answer: `${llmLabel}이 ${selectedSubject} 질문을 시험 포인트 기준으로 정리했습니다. 핵심 개념을 먼저 한 문장으로 말한 뒤, 조건을 표시하고, 마지막에 비슷한 유형을 한 번 더 풀어보세요.`,
+      },
+    ]);
+    setChatQuestion("");
+  }
+
   function persistRun(
     nextProgress: ProgressAnalysis,
     nextQuestions: PracticeQuestion[],
@@ -134,23 +162,76 @@ export function StudyHub() {
   return (
     <div className="grid gap-5 lg:grid-cols-[18rem_1fr]">
       <aside className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm lg:sticky lg:top-24 lg:self-start">
-        <p className="text-sm font-semibold text-slate-500">프로필 관심 과목</p>
-        <h1 className="mt-1 text-2xl font-bold text-slate-950">학습 과목 선택</h1>
-        <div className="mt-4 grid gap-2">
-          {subjects.map((subject) => (
-            <button
-              key={subject}
-              type="button"
-              className={`focus-ring rounded-lg border px-3 py-3 text-left text-sm font-semibold ${
-                selectedSubject === subject
-                  ? "border-slate-950 bg-slate-950 text-white"
-                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
-              }`}
-              onClick={() => selectSubject(subject)}
-            >
-              {subject}
-            </button>
-          ))}
+        <div>
+          <p className="text-sm font-semibold text-slate-500">프로필 관심 과목</p>
+          <h1 className="mt-1 text-2xl font-bold text-slate-950">학습 과목 선택</h1>
+          <div className="mt-4 grid gap-2">
+            {subjects.map((subject) => (
+              <button
+                key={subject}
+                type="button"
+                className={`focus-ring rounded-lg border px-3 py-3 text-left text-sm font-semibold ${
+                  selectedSubject === subject
+                    ? "border-slate-950 bg-slate-950 text-white"
+                    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                }`}
+                onClick={() => selectSubject(subject)}
+              >
+                {subject}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-950 p-3 text-white">
+          <div className="flex items-center gap-2">
+            <span className="grid size-9 place-items-center rounded-lg bg-white/10 text-sky-200">
+              <MessageCircle aria-hidden="true" size={18} />
+            </span>
+            <div>
+              <p className="text-xs font-semibold text-slate-300">왼쪽 LLM 질문</p>
+              <h2 className="text-base font-bold">{llmLabel}</h2>
+            </div>
+          </div>
+
+          <label className="mt-3 block">
+            <span className="sr-only">LLM에게 질문</span>
+            <textarea
+              aria-label="LLM에게 질문"
+              className="focus-ring min-h-24 w-full rounded-lg border border-white/10 bg-white px-3 py-2 text-sm text-slate-950 disabled:cursor-not-allowed disabled:bg-slate-200"
+              placeholder="궁금한 개념을 질문하세요"
+              value={chatQuestion}
+              disabled={isPracticeLocked}
+              onChange={(event) => setChatQuestion(event.target.value)}
+            />
+          </label>
+
+          <button
+            type="button"
+            className="focus-ring mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-bold text-slate-950 hover:bg-sky-50 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+            disabled={isPracticeLocked || !chatQuestion.trim()}
+            onClick={askLlm}
+          >
+            {isPracticeLocked ? <LockKeyhole aria-hidden="true" size={16} /> : <Send aria-hidden="true" size={16} />}
+            {isPracticeLocked ? "문제 풀이 중 잠금" : "질문하기"}
+          </button>
+
+          {isPracticeLocked ? (
+            <p className="mt-2 text-xs leading-5 text-slate-300">
+              진도 맞춤 문제를 다 풀고 채점하면 다시 질문할 수 있습니다.
+            </p>
+          ) : null}
+
+          {chatMessages.length > 0 ? (
+            <div className="mt-3 max-h-64 space-y-2 overflow-auto pr-1">
+              {chatMessages.map((message, index) => (
+                <article key={`${message.question}-${index}`} className="rounded-lg bg-white/10 p-3">
+                  <p className="text-xs font-semibold text-sky-200">Q. {message.question}</p>
+                  <p className="mt-2 text-xs leading-5 text-slate-100">{message.answer}</p>
+                </article>
+              ))}
+            </div>
+          ) : null}
         </div>
 
         <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-3">

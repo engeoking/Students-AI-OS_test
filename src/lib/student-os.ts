@@ -157,6 +157,14 @@ export function analyzeProgressFromUpload(fileName: string, subject: string): Pr
       examFocus: ["for loop 범위", "조건식 검증", "출력 예측"],
       recommendedQuestionCount: 5,
     },
+    "과학": {
+      subject,
+      sourceImageName: fileName,
+      currentUnit: "운동 그래프와 힘의 방향",
+      studiedRange: "그래프와 도식 자료를 읽고 개념을 적용하는 연습이 필요한 단계",
+      examFocus: ["거리-시간 그래프", "힘의 합성", "회로 도식 해석"],
+      recommendedQuestionCount: 5,
+    },
   };
 
   return unitBySubject[subject] ?? {
@@ -216,6 +224,28 @@ export function analyzeProgressFromText(progressText: string, subject: string): 
     };
   }
 
+  if (subject === "과학" && (progressText.includes("그래프") || progressText.includes("힘") || progressText.includes("운동"))) {
+    return {
+      subject,
+      sourceImageName: "직접 입력",
+      currentUnit: "운동 그래프와 힘",
+      studiedRange: progressText,
+      examFocus: ["그래프 기울기 해석", "합력 계산", "방향과 크기 구분"],
+      recommendedQuestionCount: 5,
+    };
+  }
+
+  if (subject === "과학" && (progressText.includes("회로") || progressText.includes("전류") || progressText.includes("전압"))) {
+    return {
+      subject,
+      sourceImageName: "직접 입력",
+      currentUnit: "전기 회로",
+      studiedRange: progressText,
+      examFocus: ["직렬/병렬 구분", "전류 흐름", "전압 분배"],
+      recommendedQuestionCount: 5,
+    };
+  }
+
   return {
     subject,
     sourceImageName: "직접 입력",
@@ -232,8 +262,8 @@ export function generateExamQuestions(subject: string, progress: ProgressAnalysi
       makeQuestion("math-1", subject, "어떤 수 x에 3을 더한 뒤 제곱하면 49이다. 가능한 x 값 중 양수를 쓰세요.", "4", "이차방정식 활용", "문장 조건을 식으로 바꾸는 문제가 자주 출제됩니다."),
       makeQuestion("math-2", subject, "x^2 - 5x + 6 = 0의 두 근을 작은 수부터 쉼표로 쓰세요.", "2,3", "인수분해", "근을 빠르게 찾는 기본 계산 유형입니다."),
       makeQuestion("math-3", subject, "y=(x-2)^2+3 그래프의 꼭짓점 좌표를 쓰세요.", "(2,3)", "함수 그래프", "꼭짓점 형태 해석은 서술형 단골 포인트입니다."),
-      makeQuestion("math-4", subject, "x^2=16을 만족하는 모든 정수를 쉼표로 쓰세요.", "-4,4", "제곱근", "양수와 음수 해를 모두 확인해야 합니다."),
-      makeQuestion("math-5", subject, "가로가 x, 세로가 x+3인 직사각형의 넓이가 40일 때 x의 양수 값을 쓰세요.", "5", "이차방정식 활용", "도형 조건을 방정식으로 세우는 시험형 문제입니다."),
+      makeQuestion("math-4", subject, "좌표평면에서 A(0,0), B(6,0), C(0,8)을 꼭짓점으로 하는 직각삼각형의 넓이를 쓰세요.", "24", "좌표 도형", "좌표로 주어진 도형의 밑변과 높이를 찾는 문제가 자주 출제됩니다."),
+      makeQuestion("math-5", subject, "직선 그래프 y=2x+1에서 x=3일 때 y값을 쓰세요.", "7", "일차함수 그래프", "그래프 위 점의 좌표를 식에 대입해 확인하는 유형입니다."),
     ],
     "영어": [
       makeQuestion("eng-1", subject, "빈칸에 알맞은 관계대명사: This is the book ___ I bought yesterday.", "that", "관계대명사", "목적격 관계대명사 선택이 자주 출제됩니다."),
@@ -248,6 +278,13 @@ export function generateExamQuestions(subject: string, progress: ProgressAnalysi
       makeQuestion("code-3", subject, "조건식 i <= 4에서 i가 0부터 시작해 1씩 증가하면 몇 번 실행되나요?", "5", "종료 조건", "경계값 실수가 시험에서 자주 나옵니다."),
       makeQuestion("code-4", subject, "배열 [2,4,6]의 길이를 쓰세요.", "3", "배열", "반복 횟수와 배열 길이를 연결합니다."),
       makeQuestion("code-5", subject, "짝수만 출력하려면 i % 2 의 결과가 무엇일 때 출력해야 하나요?", "0", "조건 분기", "나머지 연산을 조건문에 적용하는 유형입니다."),
+    ],
+    "과학": [
+      makeQuestion("science-1", subject, "거리-시간 그래프에서 0초에 0m, 4초에 20m인 직선 구간의 속력을 숫자로 쓰세요.", "5", "운동 그래프", "그래프의 기울기를 속력으로 해석하는 문제가 자주 출제됩니다."),
+      makeQuestion("science-2", subject, "힘의 화살표 도식에서 오른쪽 8N, 왼쪽 3N이 동시에 작용한다. 합력의 크기를 숫자로 쓰세요.", "5", "힘의 합성", "반대 방향 힘은 큰 힘에서 작은 힘을 빼야 합니다."),
+      makeQuestion("science-3", subject, "온도-시간 그래프에서 가열 중 온도가 일정하게 유지되는 구간은 무엇이 일어나는 구간인가요?", "상태 변화", "상태 변화 그래프", "그래프의 평평한 구간을 개념으로 설명하는 유형입니다."),
+      makeQuestion("science-4", subject, "전구 두 개가 한 줄로 이어진 회로 도식은 직렬과 병렬 중 무엇인가요?", "직렬", "회로 도식", "회로 그림에서 전류가 지나는 길의 개수를 구분해야 합니다."),
+      makeQuestion("science-5", subject, "삼각형 경사면 도식에서 물체가 아래쪽으로 미끄러지게 하는 주된 힘을 쓰세요.", "중력", "힘의 방향", "도형 상황에서 힘의 방향과 원인을 연결하는 문제입니다."),
     ],
   };
 

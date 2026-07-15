@@ -70,6 +70,17 @@ export type LearningRun = {
   createdAt: string;
 };
 
+export type WrongAnswerReview = {
+  id: string;
+  subject: string;
+  concept: string;
+  prompt: string;
+  studentAnswer: string;
+  correctAnswer: string;
+  explanation: string;
+  createdAt: string;
+};
+
 export type ReviewItem = {
   id: string;
   topic: string;

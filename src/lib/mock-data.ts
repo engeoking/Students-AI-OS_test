@@ -3,15 +3,16 @@ import type { ParentSummary, ReviewItem, StudentProfile, StudySession } from "./
 export const mockStudentProfile: StudentProfile = {
   name: "민준",
   grade: "중학교 3학년",
-  targetSubjects: ["수학", "영어", "코딩"],
+  targetSubjects: ["수학", "영어", "과학", "코딩"],
   recentScores: {
     "수학": 72,
     "영어": 84,
+    "과학": 79,
     "코딩": 91,
   },
   examDate: "2026-08-12",
   daysUntilExam: 28,
-  weakTopics: ["이차방정식 활용", "관계대명사", "반복문 조건 설계"],
+  weakTopics: ["이차방정식 활용", "관계대명사", "운동 그래프", "반복문 조건 설계"],
   preferredStudyTime: "평일 저녁 8시",
 };
 
