@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Save } from "lucide-react";
+import { Plus, Save } from "lucide-react";
 import { readProfileOrMock, saveStoredProfile } from "@/lib/profile-storage";
 import type { StudentProfile } from "@/lib/types";
 
 export function OnboardingForm() {
   const router = useRouter();
   const [profile, setProfile] = useState<StudentProfile>(() => readProfileOrMock());
+  const [newScoreSubject, setNewScoreSubject] = useState("");
   const [saved, setSaved] = useState(false);
+  const scoreSubjects = Object.keys(profile.recentScores);
 
   function updateProfile<K extends keyof StudentProfile>(key: K, value: StudentProfile[K]) {
     setSaved(false);
@@ -23,7 +25,57 @@ export function OnboardingForm() {
     event.preventDefault();
     saveStoredProfile(profile);
     setSaved(true);
-    router.push("/");
+    router.push("/home");
+  }
+
+  function addScoreSubject() {
+    const subject = newScoreSubject.trim();
+    if (!subject || profile.recentScores[subject] !== undefined) {
+      return;
+    }
+
+    setSaved(false);
+    setProfile((current) => ({
+      ...current,
+      targetSubjects: current.targetSubjects.includes(subject)
+        ? current.targetSubjects
+        : [...current.targetSubjects, subject],
+      recentScores: {
+        ...current.recentScores,
+        [subject]: 70,
+      },
+    }));
+    setNewScoreSubject("");
+  }
+
+  function renameScoreSubject(currentSubject: string, nextSubject: string) {
+    const trimmed = nextSubject.trim();
+    if (!trimmed || trimmed === currentSubject || profile.recentScores[trimmed] !== undefined) {
+      return;
+    }
+
+    setSaved(false);
+    setProfile((current) => {
+      const { [currentSubject]: score, ...restScores } = current.recentScores;
+
+      return {
+        ...current,
+        targetSubjects: current.targetSubjects.map((subject) =>
+          subject === currentSubject ? trimmed : subject,
+        ),
+        recentScores: {
+          ...restScores,
+          [trimmed]: score,
+        },
+      };
+    });
+  }
+
+  function updateScore(subject: string, score: number) {
+    updateProfile("recentScores", {
+      ...profile.recentScores,
+      [subject]: score,
+    });
   }
 
   return (
@@ -103,24 +155,42 @@ export function OnboardingForm() {
         <div className="mt-5 grid gap-4 lg:grid-cols-2">
           <Field label="최근 점수">
             <div className="grid gap-2">
-              {profile.targetSubjects.map((subject) => (
-                <label key={subject} className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-2">
-                  <span className="w-16 shrink-0 text-sm font-semibold text-slate-700">{subject}</span>
+              {scoreSubjects.map((subject) => (
+                <div key={subject} className="grid gap-2 rounded-lg border border-slate-200 px-3 py-2 sm:grid-cols-[1fr_0.75fr]">
                   <input
-                    className="focus-ring min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    aria-label={`${subject} 과목명`}
+                    className="focus-ring min-w-0 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700"
+                    defaultValue={subject}
+                    onBlur={(event) => renameScoreSubject(subject, event.target.value)}
+                  />
+                  <input
+                    aria-label={`${subject} 최근 점수`}
+                    className="focus-ring min-w-0 rounded-lg border border-slate-300 px-3 py-2 text-sm"
                     min={0}
                     max={100}
                     type="number"
-                    value={profile.recentScores[subject] ?? 70}
-                    onChange={(event) =>
-                      updateProfile("recentScores", {
-                        ...profile.recentScores,
-                        [subject]: Number(event.target.value),
-                      })
-                    }
+                    value={profile.recentScores[subject]}
+                    onChange={(event) => updateScore(subject, Number(event.target.value))}
                   />
-                </label>
+                </div>
               ))}
+              <div className="flex gap-2 rounded-lg border border-dashed border-slate-300 p-2">
+                <input
+                  aria-label="추가할 과목명"
+                  className="focus-ring min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                  placeholder="추가 과목"
+                  value={newScoreSubject}
+                  onChange={(event) => setNewScoreSubject(event.target.value)}
+                />
+                <button
+                  type="button"
+                  aria-label="최근 점수 과목 추가"
+                  className="focus-ring grid size-10 shrink-0 place-items-center rounded-lg bg-slate-950 text-white hover:bg-slate-800"
+                  onClick={addScoreSubject}
+                >
+                  <Plus aria-hidden="true" size={18} />
+                </button>
+              </div>
             </div>
           </Field>
           <Field label="취약 과목/취약 단원">

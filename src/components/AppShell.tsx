@@ -5,7 +5,7 @@ import { BarChart3, BookOpenCheck, ClipboardList, GraduationCap, Home, MessageSq
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { href: "/", label: "홈", icon: Home },
+  { href: "/home", label: "홈", icon: Home },
   { href: "/onboarding", label: "프로필", icon: ClipboardList },
   { href: "/study", label: "학습", icon: MessageSquareText },
   { href: "/review", label: "복습", icon: BookOpenCheck },
@@ -14,33 +14,35 @@ const navItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isHome = pathname === "/";
+  const isEntry = pathname === "/";
+  const isHome = pathname === "/home";
+  const isDark = isEntry || isHome;
   const headerClass = isHome
     ? "sticky top-0 z-20 border-b border-white/10 bg-black/90 text-white backdrop-blur"
     : "sticky top-0 z-20 border-b border-slate-200/80 bg-white/90 backdrop-blur";
-  const logoIconClass = isHome
+  const logoIconClass = isDark
     ? "grid size-9 shrink-0 place-items-center rounded-lg bg-white text-black"
     : "grid size-9 shrink-0 place-items-center rounded-lg bg-slate-900 text-white";
-  const logoTitleClass = isHome ? "block text-sm font-semibold text-white" : "block text-sm font-semibold text-slate-950";
-  const logoSubClass = isHome ? "block truncate text-xs text-slate-400" : "block truncate text-xs text-slate-500";
-  const navLinkClass = isHome
+  const logoTitleClass = isDark ? "block text-sm font-semibold text-white" : "block text-sm font-semibold text-slate-950";
+  const logoSubClass = isDark ? "block truncate text-xs text-slate-400" : "block truncate text-xs text-slate-500";
+  const navLinkClass = isDark
     ? "focus-ring inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white"
     : "focus-ring inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-950";
-  const mobileNavClass = isHome
+  const mobileNavClass = isDark
     ? "fixed inset-x-0 bottom-0 z-30 border-t border-white/10 bg-black text-slate-300 md:hidden"
     : "fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white md:hidden";
-  const mobileLinkClass = isHome
+  const mobileLinkClass = isDark
     ? "focus-ring flex min-h-16 flex-col items-center justify-center gap-1 text-xs font-medium text-slate-300"
     : "focus-ring flex min-h-16 flex-col items-center justify-center gap-1 text-xs font-medium text-slate-600";
-  const mainClass = isHome
+  const mainClass = isDark
     ? "bg-black"
     : "mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8 lg:py-8";
 
   return (
     <div className="min-h-screen">
-      <header className={headerClass}>
+      {isEntry ? null : <header className={headerClass}>
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
-          <Link href="/" className="flex min-w-0 items-center gap-2">
+          <Link href="/home" className="flex min-w-0 items-center gap-2">
             <span className={logoIconClass}>
               <GraduationCap aria-hidden="true" size={20} />
             </span>
@@ -66,11 +68,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             })}
           </nav>
         </div>
-      </header>
+      </header>}
 
       <main className={mainClass}>{children}</main>
 
-      <nav aria-label="모바일 주요 화면" className={mobileNavClass}>
+      {isEntry ? null : <nav aria-label="모바일 주요 화면" className={mobileNavClass}>
         <div className="grid grid-cols-5">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -86,8 +88,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             );
           })}
         </div>
-      </nav>
-      <div className="h-20 md:hidden" />
+      </nav>}
+      {isEntry ? null : <div className="h-20 md:hidden" />}
     </div>
   );
 }
