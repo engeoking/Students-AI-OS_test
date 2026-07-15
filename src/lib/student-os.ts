@@ -169,6 +169,63 @@ export function analyzeProgressFromUpload(fileName: string, subject: string): Pr
   };
 }
 
+export function analyzeProgressFromText(progressText: string, subject: string): ProgressAnalysis {
+  const normalized = progressText.toLowerCase();
+
+  if (subject === "수학" && (progressText.includes("이차") || progressText.includes("방정식"))) {
+    return {
+      subject,
+      sourceImageName: "직접 입력",
+      currentUnit: "이차방정식 활용",
+      studiedRange: progressText,
+      examFocus: ["문장 조건 식 세우기", "근의 공식 적용", "해의 범위 확인"],
+      recommendedQuestionCount: 5,
+    };
+  }
+
+  if (subject === "수학" && (progressText.includes("함수") || progressText.includes("그래프"))) {
+    return {
+      subject,
+      sourceImageName: "직접 입력",
+      currentUnit: "함수 그래프 해석",
+      studiedRange: progressText,
+      examFocus: ["꼭짓점 찾기", "그래프 이동", "좌표 해석"],
+      recommendedQuestionCount: 5,
+    };
+  }
+
+  if (subject === "영어" && (progressText.includes("관계대명사") || normalized.includes("that") || normalized.includes("which"))) {
+    return {
+      subject,
+      sourceImageName: "직접 입력",
+      currentUnit: "관계대명사",
+      studiedRange: progressText,
+      examFocus: ["선행사 찾기", "that/which 구분", "문장 구조 해석"],
+      recommendedQuestionCount: 5,
+    };
+  }
+
+  if (subject === "코딩" && (progressText.includes("반복") || normalized.includes("loop") || normalized.includes("for"))) {
+    return {
+      subject,
+      sourceImageName: "직접 입력",
+      currentUnit: "반복문과 종료 조건",
+      studiedRange: progressText,
+      examFocus: ["반복 횟수 계산", "종료 조건", "출력 예측"],
+      recommendedQuestionCount: 5,
+    };
+  }
+
+  return {
+    subject,
+    sourceImageName: "직접 입력",
+    currentUnit: `${subject} 오늘 학습 진도`,
+    studiedRange: progressText,
+    examFocus: ["오늘 배운 핵심 개념", "대표 유형", "오답 가능 포인트"],
+    recommendedQuestionCount: 5,
+  };
+}
+
 export function generateExamQuestions(subject: string, progress: ProgressAnalysis): PracticeQuestion[] {
   const questionBank: Record<string, PracticeQuestion[]> = {
     "수학": [

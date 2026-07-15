@@ -11,17 +11,19 @@ describe("StudyHub", () => {
     render(<StudyHub />);
 
     expect(screen.getByText("프로필 관심 과목")).toBeInTheDocument();
-    expect(screen.getAllByText("Math Tutor LLM")[0]).toBeInTheDocument();
+    expect(screen.queryByText(/최근 점수/)).not.toBeInTheDocument();
+    expect(screen.queryByText("학생 수준 분석")).not.toBeInTheDocument();
+    expect(screen.queryByText("연결 LLM 반응 방식")).not.toBeInTheDocument();
+    expect(screen.queryByText("Math Tutor LLM")).not.toBeInTheDocument();
 
-    const file = new File(["mock"], "math-progress.jpg", { type: "image/jpeg" });
-    fireEvent.change(screen.getByLabelText("진도 사진 업로드"), {
-      target: { files: [file] },
+    fireEvent.change(screen.getByLabelText("오늘 배운 진도"), {
+      target: { value: "이차방정식 활용 문제에서 문장 조건을 식으로 세우는 방법" },
     });
 
-    expect(screen.getByText("math-progress.jpg")).toBeInTheDocument();
-    expect(screen.getByText("이차방정식 활용과 함수 그래프")).toBeInTheDocument();
+    expect(screen.getByText("직접 입력")).toBeInTheDocument();
+    expect(screen.getByText("이차방정식 활용")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("button", { name: "시험형 문제 5개 만들기" }));
+    fireEvent.click(screen.getByRole("button", { name: "진도 맞춤 문제 5개 만들기" }));
     expect(screen.getByLabelText("문제 1 답")).toBeInTheDocument();
     expect(screen.getByLabelText("문제 5 답")).toBeInTheDocument();
 

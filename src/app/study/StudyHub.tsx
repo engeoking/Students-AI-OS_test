@@ -1,18 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { BarChart3, BrainCircuit, CheckCircle2, ClipboardCheck, ImageUp, Save, Sparkles } from "lucide-react";
+import { BarChart3, CheckCircle2, ClipboardCheck, ImageUp, Save } from "lucide-react";
 import { readLearningRuns, saveLearningRun } from "@/lib/learning-storage";
 import { readProfileOrMock } from "@/lib/profile-storage";
 import {
   analyzeProgressFromUpload,
-  analyzeStudentLevel,
+  analyzeProgressFromText,
   buildWeaknessReport,
   createLearningRun,
   generateExamQuestions,
   getProfileSubjects,
   gradePracticeAnswers,
-  recommendLearningLlm,
 } from "@/lib/student-os";
 import type { GradedAnswer, LearningRun, PracticeQuestion, ProgressAnalysis, WeaknessReport } from "@/lib/types";
 
@@ -20,6 +19,7 @@ export function StudyHub() {
   const [profile] = useState(() => readProfileOrMock());
   const subjects = useMemo(() => getProfileSubjects(profile), [profile]);
   const [selectedSubject, setSelectedSubject] = useState(subjects[0] ?? "수학");
+  const [progressText, setProgressText] = useState("");
   const [progress, setProgress] = useState<ProgressAnalysis | null>(null);
   const [questions, setQuestions] = useState<PracticeQuestion[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -27,8 +27,6 @@ export function StudyHub() {
   const [showWeaknessReport, setShowWeaknessReport] = useState(false);
   const [savedRuns, setSavedRuns] = useState<LearningRun[]>(() => readLearningRuns());
 
-  const level = analyzeStudentLevel(profile, selectedSubject);
-  const recommendedLlm = recommendLearningLlm(selectedSubject, level);
   const correctCount = gradedAnswers.filter((answer) => answer.isCorrect).length;
   const weaknessReport = useMemo(
     () => (showWeaknessReport && gradedAnswers.length > 0
@@ -42,6 +40,7 @@ export function StudyHub() {
 
   function selectSubject(subject: string) {
     setSelectedSubject(subject);
+    setProgressText("");
     setProgress(null);
     setQuestions([]);
     setAnswers({});
@@ -56,6 +55,19 @@ export function StudyHub() {
     }
 
     setProgress(analyzeProgressFromUpload(file.name, selectedSubject));
+    setQuestions([]);
+    setAnswers({});
+    setGradedAnswers([]);
+    setShowWeaknessReport(false);
+  }
+
+  function handleProgressTextChange(value: string) {
+    setProgressText(value);
+    if (value.trim()) {
+      setProgress(analyzeProgressFromText(value.trim(), selectedSubject));
+    } else {
+      setProgress(null);
+    }
     setQuestions([]);
     setAnswers({});
     setGradedAnswers([]);
@@ -137,9 +149,6 @@ export function StudyHub() {
               onClick={() => selectSubject(subject)}
             >
               {subject}
-              <span className="mt-1 block text-xs font-medium opacity-70">
-                최근 점수 {profile.recentScores[subject] ?? 70}점
-              </span>
             </button>
           ))}
         </div>
@@ -148,7 +157,7 @@ export function StudyHub() {
           <p className="text-xs font-semibold text-slate-500">저장된 학습 데이터</p>
           <p className="mt-1 text-lg font-bold text-slate-950">{savedRuns.length}회</p>
           <p className="mt-1 text-xs leading-5 text-slate-600">
-            채점과 약점 분석 결과는 다음 방문 때 수준 분석과 복습 방향의 기초 데이터로 저장됩니다.
+            채점과 약점 분석 결과는 다음 방문 때 복습 방향의 기초 데이터로 저장됩니다.
           </p>
         </div>
       </aside>
@@ -156,31 +165,20 @@ export function StudyHub() {
       <section className="space-y-5">
         <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
           <p className="text-sm font-semibold text-sky-700">학습 허브</p>
-          <div className="mt-1 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-slate-950">{selectedSubject} 맞춤 실전 학습</h2>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-                학생 수준과 사진으로 확인한 진도를 바탕으로 mock LLM이 시험형 문제를 구성하고 채점, 오답 해설, 약점 분석까지 저장합니다.
-              </p>
-            </div>
-            <span className="inline-flex items-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white">
-              <BrainCircuit aria-hidden="true" size={17} />
-              {recommendedLlm.label}
-            </span>
+          <div className="mt-1">
+            <h2 className="text-2xl font-bold text-slate-950">{selectedSubject} 맞춤 문제 만들기</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
+              오늘 배운 진도를 사진으로 올리거나 글로 적으면, 그 진도에 맞춰 시험형 문제를 만들고 채점과 약점 분석까지 저장합니다.
+            </p>
           </div>
-        </div>
-
-        <div className="grid gap-4 xl:grid-cols-2">
-          <InfoCard icon={BarChart3} title="학생 수준 분석" value={level} detail={`${selectedSubject} 최근 점수와 약점 단원을 기준으로 산정`} />
-          <InfoCard icon={Sparkles} title="연결 LLM 반응 방식" value={recommendedLlm.label} detail={recommendedLlm.reason} />
         </div>
 
         <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
-              <h2 className="text-xl font-bold text-slate-950">1. 진도 사진 업로드</h2>
+              <h2 className="text-xl font-bold text-slate-950">1. 오늘 배운 진도 입력</h2>
               <p className="mt-1 text-sm leading-6 text-slate-600">
-                교재, 노트, 문제집 페이지를 찍어 올렸다고 가정하고 현재 진도와 시험 포인트를 mock 분석합니다.
+                교재, 노트, 문제집 페이지 사진을 올리거나 오늘 배운 내용을 직접 적어주세요.
               </p>
             </div>
             <label className="focus-ring inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
@@ -190,9 +188,20 @@ export function StudyHub() {
             </label>
           </div>
 
+          <label className="mt-4 block">
+            <span className="mb-2 block text-sm font-semibold text-slate-700">오늘 뭐 배웠나요?</span>
+            <textarea
+              aria-label="오늘 배운 진도"
+              className="focus-ring min-h-28 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              placeholder="예: 이차방정식 활용 문제에서 문장 조건을 식으로 세우는 방법을 배웠어요."
+              value={progressText}
+              onChange={(event) => handleProgressTextChange(event.target.value)}
+            />
+          </label>
+
           {progress ? (
             <div className="mt-4 grid gap-3 rounded-lg border border-sky-100 bg-sky-50 p-4 md:grid-cols-3">
-              <ProgressLine label="파일" value={progress.sourceImageName} />
+              <ProgressLine label="입력 방식" value={progress.sourceImageName} />
               <ProgressLine label="현재 진도" value={progress.currentUnit} />
               <ProgressLine label="학습 범위" value={progress.studiedRange} />
               <div className="md:col-span-3">
@@ -215,7 +224,7 @@ export function StudyHub() {
             onClick={createQuestions}
           >
             <ClipboardCheck aria-hidden="true" size={17} />
-            시험형 문제 5개 만들기
+            진도 맞춤 문제 5개 만들기
           </button>
         </section>
 
@@ -326,33 +335,6 @@ export function StudyHub() {
         ) : null}
       </section>
     </div>
-  );
-}
-
-function InfoCard({
-  icon: Icon,
-  title,
-  value,
-  detail,
-}: {
-  icon: typeof BarChart3;
-  title: string;
-  value: string;
-  detail: string;
-}) {
-  return (
-    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <div className="flex items-start gap-3">
-        <span className="grid size-10 shrink-0 place-items-center rounded-lg bg-slate-950 text-white">
-          <Icon aria-hidden="true" size={18} />
-        </span>
-        <div>
-          <p className="text-sm font-semibold text-slate-500">{title}</p>
-          <p className="mt-1 text-lg font-bold text-slate-950">{value}</p>
-          <p className="mt-1 text-sm leading-6 text-slate-600">{detail}</p>
-        </div>
-      </div>
-    </section>
   );
 }
 
