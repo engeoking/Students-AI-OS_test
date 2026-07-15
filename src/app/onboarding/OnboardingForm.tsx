@@ -6,6 +6,10 @@ import { Minus, Plus, Save } from "lucide-react";
 import { readProfileOrMock, saveStoredProfile } from "@/lib/profile-storage";
 import type { StudentProfile } from "@/lib/types";
 
+function parseSubjectList(value: string) {
+  return value.split(/[,\s]+/).map((subject) => subject.trim()).filter(Boolean);
+}
+
 export function OnboardingForm() {
   const router = useRouter();
   const [profile, setProfile] = useState<StudentProfile>(() => readProfileOrMock());
@@ -135,7 +139,7 @@ export function OnboardingForm() {
               onChange={(event) =>
                 updateProfile(
                   "targetSubjects",
-                  event.target.value.split(",").map((subject) => subject.trim()).filter(Boolean),
+                  parseSubjectList(event.target.value),
                 )
               }
             />

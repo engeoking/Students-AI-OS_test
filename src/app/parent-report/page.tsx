@@ -1,4 +1,4 @@
-import { AlertCircle, Clock3, MessageCircleQuestion, TrendingUp } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/MetricCard";
 import { mockParentSummary } from "@/lib/mock-data";
 import { ParentLearningHistory } from "./ParentLearningHistory";
@@ -19,7 +19,7 @@ export default function ParentReportPage() {
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-[0.58fr_0.42fr]">
+      <section>
         <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
           <div className="flex items-center gap-2">
             <TrendingUp aria-hidden="true" size={19} className="text-sky-700" />
@@ -43,40 +43,6 @@ export default function ParentReportPage() {
             ))}
           </div>
         </div>
-
-        <aside className="space-y-4">
-          <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-            <div className="flex items-center gap-2">
-              <AlertCircle aria-hidden="true" size={19} className="text-rose-700" />
-              <h2 className="text-xl font-bold text-slate-950">취약 개념</h2>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {mockParentSummary.weakConcepts.map((concept) => (
-                <span key={concept} className="rounded-lg bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-800">
-                  {concept}
-                </span>
-              ))}
-            </div>
-          </section>
-
-          <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-            <div className="flex items-center gap-2">
-              <Clock3 aria-hidden="true" size={19} className="text-emerald-700" />
-              <h2 className="text-xl font-bold text-slate-950">추천 액션</h2>
-            </div>
-            <p className="mt-3 leading-7 text-slate-700">{mockParentSummary.recommendedAction}</p>
-          </section>
-
-          <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
-            <div className="flex items-center gap-2">
-              <MessageCircleQuestion aria-hidden="true" size={19} className="text-sky-700" />
-              <h2 className="text-xl font-bold text-slate-950">요약</h2>
-            </div>
-            <p className="mt-3 leading-7 text-slate-700">
-              질문 수가 늘면서 약점 개념이 더 명확해졌습니다. 오늘은 수학 오답 복습을 먼저 끝내면 시험 전 부담을 낮출 수 있습니다.
-            </p>
-          </section>
-        </aside>
       </section>
 
       <ParentLearningHistory />

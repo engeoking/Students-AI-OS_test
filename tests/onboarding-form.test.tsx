@@ -34,4 +34,16 @@ describe("OnboardingForm", () => {
 
     expect(screen.queryByLabelText("수학 최근 점수")).not.toBeInTheDocument();
   });
+
+  it("splits target subjects by comma or spacing immediately", () => {
+    window.localStorage.clear();
+
+    render(<OnboardingForm />);
+
+    fireEvent.change(screen.getByLabelText("목표 과목"), {
+      target: { value: "수학 영어,과학" },
+    });
+
+    expect(screen.getByText("수학 / 영어 / 과학")).toBeInTheDocument();
+  });
 });
