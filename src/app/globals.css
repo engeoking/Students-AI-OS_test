@@ -40,3 +40,59 @@ textarea {
 .focus-ring:focus-visible {
   outline-color: #0ea5e9;
 }
+
+.hero-cap-reveal {
+  animation: hero-reveal 640ms ease-out both;
+}
+
+.hero-title-reveal {
+  animation: hero-title-reveal 820ms ease-out 150ms both;
+}
+
+.hero-subtitle-reveal {
+  animation: hero-reveal 720ms ease-out 420ms both;
+}
+
+.hero-actions-reveal {
+  animation: hero-reveal 720ms ease-out 620ms both;
+}
+
+.hero-line-reveal {
+  animation: hero-reveal 720ms ease-out 820ms both;
+}
+
+@keyframes hero-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes hero-title-reveal {
+  from {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(22px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-cap-reveal,
+  .hero-title-reveal,
+  .hero-subtitle-reveal,
+  .hero-actions-reveal,
+  .hero-line-reveal {
+    animation: none;
+  }
+}
