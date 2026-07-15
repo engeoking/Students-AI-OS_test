@@ -6,12 +6,13 @@ Student AI OS는 단순 챗봇이 아니라 학생 프로필, AI 라우팅, 학�
 
 ## 초기 기술 스택 가정
 
-- 프론트엔드: 웹/PWA 우선
-- 백엔드: API 서버 + 데이터 저장소
-- AI 계층: 다중 모델 라우팅 오케스트레이터
-- 분석/리포트: 배치 또는 이벤트 기반 요약 생성
+- 프론트엔드: Next.js App Router + TypeScript
+- 스타일: Tailwind CSS
+- 테스트: Vitest + React Testing Library
+- 상태: React local state + 온보딩 프로필 localStorage
+- 데이터: `src/lib/mock-data.ts` fixture
 
-구체 스택은 다음 기획/개발 단계에서 확정한다.
+1차 검증용 MVP에서는 서버, 인증, 실제 AI 계층, 운영 데이터 저장소를 만들지 않는다.
 
 ## 폴더 구조
 
@@ -21,8 +22,16 @@ Student AI OS는 단순 챗봇이 아니라 학생 프로필, AI 라우팅, 학�
 │  └─ workflows/
 │     └─ ci.yml
 ├─ src/
+│  ├─ app/
+│  │  ├─ onboarding/
+│  │  ├─ study/
+│  │  ├─ review/
+│  │  └─ parent-report/
+│  ├─ components/
+│  └─ lib/
 ├─ tests/
 ├─ public/
+├─ package.json
 ├─ AGENTS.md
 ├─ SPEC.md
 ├─ ARCH.md
@@ -35,16 +44,18 @@ Student AI OS는 단순 챗봇이 아니라 학생 프로필, AI 라우팅, 학�
 1. Student Profile
    - 학년, 과목 목표, 최근 점수, 시험 일정, 학습 선호
 2. AI Router
-   - 질문 의도/과목 기반 모델 선택
+   - 질문 의도/과목 기반 mock AI 라벨 선택
 3. Memory Engine
-   - 질문 기록, 약점 개념, 복습 상태 저장
+   - 질문 기록, 약점 개념, 복습 상태를 fixture와 화면 state로 표현
 4. Learning Engine
-   - 오늘 계획, 문제 생성, 채점, 복습 제안
+   - 질문 입력 후 mock 답변과 복습 항목 생성
 5. Parent Reporting
-   - 학습 요약과 추천 액션 생성
+   - fixture 기반 학습 요약과 추천 액션 표시
 
 ## 데이터 저장 방식
 
+- 1차 MVP는 mock fixture와 localStorage만 사용한다.
+- 온보딩 프로필 수정값은 브라우저 localStorage에 저장한다.
 - 학생 프로필, 학습 세션, 복습 일정, 리포트 이력을 구조화 저장
 - 대화 원문은 필요한 최소 범위만 저장하고 개인정보 최소화 원칙 적용
 - AI 모델별 원시 응답보다 학생 중심 요약/태그 데이터를 우선 저장

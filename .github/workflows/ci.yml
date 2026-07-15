@@ -22,5 +22,8 @@ jobs:
           test -f TASK.md
           test -f README.md
 
-      - name: Placeholder note
-        run: echo "앱 스캐폴드 생성 후 npm ci / npm run check 단계로 교체"
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run project check
+        run: npm run check

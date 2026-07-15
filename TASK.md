@@ -38,13 +38,20 @@ Student AI OS의 핵심 가설을 빠르게 검증할 수 있는 반응형 웹 M
 
 ## 완료 기준
 
-- `/home/merlin/worktrees/studentAI/task-001-responsive-mvp`에서 작업한다.
-- 웹 앱이 로컬에서 실행된다.
-- 모바일 폭과 데스크톱 폭 모두에서 레이아웃이 무너지지 않는다.
-- 학생 프로필, 학습 허브, 복습 큐, 부모 리포트 화면이 연결된다.
-- 실제 AI 대신 mock 로직으로도 제품 흐름이 이해된다.
-- `npm run check`가 통과한다.
-- 변경 파일, 실행 명령, 테스트 결과, 리스크를 보고할 수 있다.
+- [x] `/home/merlin/worktrees/studentAI/task-001-responsive-mvp`에서 작업한다.
+- [x] 웹 앱이 로컬에서 실행된다.
+- [x] 모바일 폭과 데스크톱 폭 모두에서 레이아웃이 무너지지 않는다.
+- [x] 학생 프로필, 학습 허브, 복습 큐, 부모 리포트 화면이 연결된다.
+- [x] 실제 AI 대신 mock 로직으로도 제품 흐름이 이해된다.
+- [x] `npm run check`가 통과한다.
+- [x] 변경 파일, 실행 명령, 테스트 결과, 리스크를 보고할 수 있다.
+
+## 구현 메모
+
+- 1차 구현 브랜치: `task-001-responsive-mvp`
+- 작업 worktree: `/home/merlin/worktrees/studentAI/task-001-responsive-mvp`
+- 실제 AI API, 인증, 결제, School Dashboard, Smart Pen은 구현하지 않았다.
+- mock 데이터는 `src/lib/mock-data.ts`, mock 라우팅/복습 생성 로직은 `src/lib/student-os.ts`에 모았다.
 
 ## 권장 기술 방향
 
