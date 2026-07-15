@@ -1,6 +1,7 @@
 import { AlertCircle, Clock3, MessageCircleQuestion, TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/MetricCard";
 import { mockParentSummary } from "@/lib/mock-data";
+import { ParentLearningHistory } from "./ParentLearningHistory";
 
 export default function ParentReportPage() {
   const maxMinutes = Math.max(...mockParentSummary.trend.map((item) => item.minutes));
@@ -77,6 +78,8 @@ export default function ParentReportPage() {
           </section>
         </aside>
       </section>
+
+      <ParentLearningHistory />
     </div>
   );
 }

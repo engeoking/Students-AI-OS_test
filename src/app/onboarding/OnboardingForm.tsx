@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Save } from "lucide-react";
+import { Minus, Plus, Save } from "lucide-react";
 import { readProfileOrMock, saveStoredProfile } from "@/lib/profile-storage";
 import type { StudentProfile } from "@/lib/types";
 
@@ -75,6 +75,20 @@ export function OnboardingForm() {
     updateProfile("recentScores", {
       ...profile.recentScores,
       [subject]: score,
+    });
+  }
+
+  function removeScoreSubject(subjectToRemove: string) {
+    setSaved(false);
+    setProfile((current) => {
+      const nextScores = { ...current.recentScores };
+      delete nextScores[subjectToRemove];
+
+      return {
+        ...current,
+        targetSubjects: current.targetSubjects.filter((subject) => subject !== subjectToRemove),
+        recentScores: nextScores,
+      };
     });
   }
 
@@ -156,7 +170,7 @@ export function OnboardingForm() {
           <Field label="최근 점수">
             <div className="grid gap-2">
               {scoreSubjects.map((subject) => (
-                <div key={subject} className="grid gap-2 rounded-lg border border-slate-200 px-3 py-2 sm:grid-cols-[1fr_0.75fr]">
+                <div key={subject} className="grid gap-2 rounded-lg border border-slate-200 px-3 py-2 sm:grid-cols-[1fr_0.75fr_auto]">
                   <input
                     aria-label={`${subject} 과목명`}
                     className="focus-ring min-w-0 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700"
@@ -172,6 +186,14 @@ export function OnboardingForm() {
                     value={profile.recentScores[subject]}
                     onChange={(event) => updateScore(subject, Number(event.target.value))}
                   />
+                  <button
+                    type="button"
+                    aria-label={`${subject} 과목 삭제`}
+                    className="focus-ring grid size-10 shrink-0 place-items-center rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100"
+                    onClick={() => removeScoreSubject(subject)}
+                  >
+                    <Minus aria-hidden="true" size={18} />
+                  </button>
                 </div>
               ))}
               <div className="flex gap-2 rounded-lg border border-dashed border-slate-300 p-2">

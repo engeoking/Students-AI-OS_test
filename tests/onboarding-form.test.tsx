@@ -22,4 +22,16 @@ describe("OnboardingForm", () => {
     expect(screen.getByLabelText("물리 과목명")).toBeInTheDocument();
     expect(screen.getByLabelText("물리 최근 점수")).toHaveValue(70);
   });
+
+  it("removes a recent-score subject with the minus button", () => {
+    window.localStorage.clear();
+
+    render(<OnboardingForm />);
+
+    expect(screen.getByLabelText("수학 최근 점수")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "수학 과목 삭제" }));
+
+    expect(screen.queryByLabelText("수학 최근 점수")).not.toBeInTheDocument();
+  });
 });
