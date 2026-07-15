@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  project-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify project docs exist
+        run: |
+          test -f AGENTS.md
+          test -f SPEC.md
+          test -f ARCH.md
+          test -f TASK.md
+          test -f README.md
+
+      - name: Placeholder note
+        run: echo "앱 스캐폴드 생성 후 npm ci / npm run check 단계로 교체"
