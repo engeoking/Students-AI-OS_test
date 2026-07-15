@@ -1,21 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Save } from "lucide-react";
-import { mockStudentProfile } from "@/lib/mock-data";
+import { readProfileOrMock, saveStoredProfile } from "@/lib/profile-storage";
 import type { StudentProfile } from "@/lib/types";
 
-const storageKey = "student-ai-os-profile";
-
 export function OnboardingForm() {
-  const [profile, setProfile] = useState<StudentProfile>(() => {
-    if (typeof window === "undefined") {
-      return mockStudentProfile;
-    }
-
-    const stored = window.localStorage.getItem(storageKey);
-    return stored ? (JSON.parse(stored) as StudentProfile) : mockStudentProfile;
-  });
+  const router = useRouter();
+  const [profile, setProfile] = useState<StudentProfile>(() => readProfileOrMock());
   const [saved, setSaved] = useState(false);
 
   function updateProfile<K extends keyof StudentProfile>(key: K, value: StudentProfile[K]) {
@@ -28,8 +21,9 @@ export function OnboardingForm() {
 
   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    window.localStorage.setItem(storageKey, JSON.stringify(profile));
+    saveStoredProfile(profile);
     setSaved(true);
+    router.push("/");
   }
 
   return (
@@ -45,7 +39,7 @@ export function OnboardingForm() {
             className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
           >
             <Save aria-hidden="true" size={17} />
-            저장
+            저장하고 홈으로
           </button>
         </div>
 
