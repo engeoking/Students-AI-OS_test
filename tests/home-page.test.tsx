@@ -20,5 +20,7 @@ describe("entry and home dashboard", () => {
     expect(screen.getByText("질문 수")).toBeInTheDocument();
     expect(screen.getByText("오늘 복습")).toBeInTheDocument();
     expect(screen.getByText("최저 점수")).toBeInTheDocument();
+    expect(screen.queryByText("최근 학습 메모리")).not.toBeInTheDocument();
+    expect(screen.queryByText("학습 운영 흐름")).not.toBeInTheDocument();
   });
 });
