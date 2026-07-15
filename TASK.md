@@ -52,6 +52,7 @@ Student AI OS의 핵심 가설을 빠르게 검증할 수 있는 반응형 웹 M
 - 작업 worktree: `/home/merlin/worktrees/studentAI/task-001-responsive-mvp`
 - 실제 AI API, 인증, 결제, School Dashboard, Smart Pen은 구현하지 않았다.
 - mock 데이터는 `src/lib/mock-data.ts`, mock 라우팅/복습 생성 로직은 `src/lib/student-os.ts`에 모았다.
+- 학습 허브는 프로필 과목 선택, mock LLM 추천, 진도 사진 업로드 mock 분석, 시험형 문제 생성, 답안 입력, 채점, 오답 해설, 약점 분석, localStorage 저장 흐름까지 확장했다.
 
 ## 권장 기술 방향
 
