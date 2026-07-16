@@ -24,15 +24,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen">
-      {isEntry ? null : <header className="sticky top-0 z-20 border-b border-slate-200/80 bg-white/85 backdrop-blur-xl">
+      {isEntry ? null : <header className="sticky top-0 z-20 border-b border-black/10 bg-white/90 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
           <Link href="/home" className="flex min-w-0 items-center gap-2">
-            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-slate-950 text-white shadow-sm">
+            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-black text-[#D4AF37] shadow-sm">
               <GraduationCap aria-hidden="true" size={20} />
             </span>
             <span className="min-w-0">
-              <span className="block text-sm font-bold text-slate-950">Student AI OS</span>
-              <span className="block truncate text-xs font-medium text-slate-500">learning memory MVP</span>
+              <span className="block text-sm font-bold text-black">Student AI OS</span>
+              <span className="block truncate text-xs font-medium text-black/55">learning memory MVP</span>
             </span>
           </Link>
 
@@ -46,8 +46,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   href={item.href}
                   className={`focus-ring inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition ${
                     active
-                      ? "border border-sky-200 bg-sky-50 text-sky-800"
-                      : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
+                      ? "border border-[#D4AF37]/60 bg-[#D4AF37]/15 text-black"
+                      : "text-black/60 hover:bg-black/5 hover:text-black"
                   }`}
                 >
                   <Icon aria-hidden="true" size={17} />
@@ -61,7 +61,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
       <main className={mainClass}>{children}</main>
 
-      {isEntry ? null : <nav aria-label="모바일 주요 화면" className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/95 backdrop-blur md:hidden">
+      {isEntry ? null : <nav aria-label="모바일 주요 화면" className="fixed inset-x-0 bottom-0 z-30 border-t border-black/10 bg-white/95 backdrop-blur md:hidden">
         <div className="grid grid-cols-5">
           {navItems.map((item) => {
             const Icon = item.icon;
@@ -71,7 +71,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                 key={item.href}
                 href={item.href}
                 className={`focus-ring flex min-h-16 flex-col items-center justify-center gap-1 text-xs font-semibold ${
-                  active ? "text-slate-950" : "text-slate-500"
+                  active ? "text-[#9B111E]" : "text-black/55"
                 }`}
               >
                 <Icon aria-hidden="true" size={19} />

@@ -34,7 +34,7 @@ export function ReviewQueue() {
               type="button"
               className={`focus-ring rounded-lg border px-3 py-3 text-left text-sm font-semibold ${
                 selectedSubject === subject
-                  ? "border-sky-300 bg-sky-50 text-sky-800 shadow-sm"
+                  ? "border-[#D4AF37]/70 bg-[#D4AF37]/15 text-black shadow-sm"
                   : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
               }`}
               onClick={() => setSelectedSubject(subject)}
@@ -44,8 +44,8 @@ export function ReviewQueue() {
           ))}
         </div>
 
-        <div className="mt-5 rounded-lg border border-rose-100 bg-rose-50/80 p-3">
-          <p className="text-xs font-semibold text-rose-700">현재 과목 오답 노트</p>
+        <div className="mt-5 rounded-lg border border-[#9B111E]/20 bg-[#9B111E]/10 p-3">
+          <p className="text-xs font-semibold text-[#9B111E]">현재 과목 오답 노트</p>
           <p className="mt-1 text-2xl font-bold text-slate-950">{wrongAnswerReviews.length}개</p>
           <p className="mt-1 text-xs leading-5 text-slate-600">
             학습에서 채점한 오답은 자동으로 이 복습 목록에 연결됩니다.
@@ -55,7 +55,7 @@ export function ReviewQueue() {
 
       <section className="space-y-5">
         <section className="product-card p-4 sm:p-6">
-          <p className="text-sm font-semibold text-sky-700">복습 큐</p>
+          <p className="text-sm font-semibold text-[#9B111E]">복습 큐</p>
           <h2 className="mt-1 text-2xl font-bold text-slate-950">약점과 오답 개념을 일정별로 관리합니다</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-4">
             {bucketOrder.map((bucket) => (
@@ -69,11 +69,11 @@ export function ReviewQueue() {
 
         <section className="product-card p-4 sm:p-5">
           <div className="flex items-center gap-2">
-            <span className="grid size-9 place-items-center rounded-lg bg-rose-50 text-rose-700">
+              <span className="grid size-9 place-items-center rounded-lg bg-[#9B111E]/10 text-[#9B111E]">
               <NotebookText aria-hidden="true" size={18} />
             </span>
             <div>
-              <p className="text-sm font-semibold text-rose-700">오답 노트</p>
+              <p className="text-sm font-semibold text-[#9B111E]">오답 노트</p>
               <h2 className="font-bold text-slate-950">{selectedSubject} 틀린 문제 풀이</h2>
             </div>
           </div>
@@ -81,9 +81,9 @@ export function ReviewQueue() {
           {wrongAnswerReviews.length > 0 ? (
             <div className="mt-4 space-y-3">
               {wrongAnswerReviews.map((review) => (
-                <article key={review.id} className="rounded-lg border border-rose-100 bg-rose-50/80 p-4">
+                <article key={review.id} className="rounded-lg border border-[#9B111E]/20 bg-[#9B111E]/10 p-4">
                   <div className="flex flex-wrap gap-2">
-                    <span className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-rose-800">{review.concept}</span>
+                    <span className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-[#9B111E]">{review.concept}</span>
                     <span className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-slate-700">
                       {new Date(review.createdAt).toLocaleDateString("ko-KR")}
                     </span>
@@ -128,8 +128,8 @@ export function ReviewQueue() {
                   <article key={item.id} className="rounded-lg border border-slate-200 bg-white/70 p-3">
                     <p className="text-sm font-semibold text-slate-950">{item.topic}</p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <span className="rounded-lg bg-sky-50 px-2 py-1 text-xs font-semibold text-sky-700">{item.source}</span>
-                      <span className="rounded-lg bg-emerald-50 px-2 py-1 text-xs font-semibold text-emerald-700">{item.status}</span>
+                      <span className="rounded-lg bg-[#D4AF37]/10 px-2 py-1 text-xs font-semibold text-[#7a5a00]">{item.source}</span>
+                      <span className="rounded-lg bg-[#9B111E]/10 px-2 py-1 text-xs font-semibold text-[#9B111E]">{item.status}</span>
                     </div>
                   </article>
                 ))}

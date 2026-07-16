@@ -16,7 +16,7 @@ export default function EntryPage() {
         </h1>
         <Link
           href="/onboarding"
-          className="hero-actions-reveal focus-ring mt-9 inline-flex items-center justify-center gap-2 rounded-lg bg-sky-300 px-6 py-3 text-sm font-black text-slate-950 shadow-lg shadow-sky-300/20 hover:bg-sky-200"
+          className="hero-actions-reveal focus-ring mt-9 inline-flex items-center justify-center gap-2 rounded-lg bg-[#D4AF37] px-6 py-3 text-sm font-black text-black shadow-lg shadow-[#D4AF37]/20 hover:bg-[#c6a12f]"
         >
           프로필 입력하기
           <ArrowRight aria-hidden="true" size={18} />

@@ -101,7 +101,7 @@ export function OnboardingForm() {
       <form onSubmit={handleSubmit} className="product-card p-4 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-sm font-bold text-sky-700">학생 온보딩</p>
+            <p className="text-sm font-bold text-[#9B111E]">학생 온보딩</p>
             <h1 className="mt-1 text-2xl font-bold text-slate-950">학습 프로필 입력</h1>
             <p className="mt-2 text-sm leading-6 text-slate-600">
               학습 허브와 리포트가 사용할 기본 기준만 간단히 관리합니다.
@@ -109,7 +109,7 @@ export function OnboardingForm() {
           </div>
           <button
             type="submit"
-            className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700"
+            className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-[#9B111E] px-4 py-2 text-sm font-semibold text-white hover:bg-[#7f0e19]"
           >
             <Save aria-hidden="true" size={17} />
             저장하고 홈으로
@@ -196,7 +196,7 @@ export function OnboardingForm() {
                   <button
                     type="button"
                     aria-label={`${subject} 과목 삭제`}
-                    className="focus-ring grid size-10 shrink-0 place-items-center rounded-lg border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100"
+                    className="focus-ring grid size-10 shrink-0 place-items-center rounded-lg border border-[#9B111E]/25 bg-[#9B111E]/10 text-[#9B111E] hover:bg-[#9B111E]/15"
                     onClick={() => removeScoreSubject(subject)}
                   >
                     <Minus aria-hidden="true" size={18} />
@@ -236,7 +236,7 @@ export function OnboardingForm() {
           </Field>
         </div>
 
-        {saved ? <p className="mt-4 rounded-lg bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700">프로필이 브라우저에 저장되었습니다.</p> : null}
+        {saved ? <p className="mt-4 rounded-lg bg-[#D4AF37]/10 px-3 py-2 text-sm font-semibold text-[#7a5a00]">프로필이 브라우저에 저장되었습니다.</p> : null}
       </form>
 
       <aside className="product-card p-4 sm:p-5 lg:sticky lg:top-24 lg:self-start">

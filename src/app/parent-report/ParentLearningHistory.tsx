@@ -70,7 +70,7 @@ export function ParentLearningHistory() {
     <section className="product-card p-4 sm:p-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-sky-700">날짜별 문제풀이 리포트</p>
+          <p className="text-sm font-semibold text-[#9B111E]">날짜별 문제풀이 리포트</p>
           <h2 className="mt-1 text-2xl font-bold text-slate-950">선택한 날의 과목별 약점과 요약</h2>
         </div>
         <label className="block min-w-48">
@@ -97,7 +97,7 @@ export function ParentLearningHistory() {
                 type="button"
                 className={`focus-ring rounded-lg border px-3 py-2 text-sm font-bold ${
                   activeSubject === subject
-                    ? "border-sky-300 bg-sky-50 text-sky-800 shadow-sm"
+                    ? "border-[#D4AF37]/70 bg-[#D4AF37]/15 text-black shadow-sm"
                     : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
                 }`}
                 onClick={() => setSelectedSubject(subject)}
@@ -110,7 +110,7 @@ export function ParentLearningHistory() {
           <div className="mt-5 grid gap-4 lg:grid-cols-[0.38fr_0.62fr]">
             <div className="product-panel p-4">
               <div className="flex items-center gap-2">
-                <ClipboardCheck aria-hidden="true" className="text-sky-700" size={18} />
+                <ClipboardCheck aria-hidden="true" className="text-[#9B111E]" size={18} />
                 <h3 className="font-bold text-slate-950">{activeSubject} 풀이 결과</h3>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-3">
@@ -121,7 +121,7 @@ export function ParentLearningHistory() {
                 <p className="text-sm font-semibold text-slate-700">취약 개념</p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {(subjectSummary.weakConcepts.length > 0 ? subjectSummary.weakConcepts : ["실전 속도 유지"]).map((concept) => (
-                    <span key={concept} className="rounded-lg bg-rose-50 px-2 py-1 text-xs font-bold text-rose-800">
+                    <span key={concept} className="rounded-lg bg-[#9B111E]/10 px-2 py-1 text-xs font-bold text-[#9B111E]">
                       {concept}
                     </span>
                   ))}
@@ -131,7 +131,7 @@ export function ParentLearningHistory() {
 
             <div className="rounded-lg border border-slate-200 bg-white/80 p-4">
               <div className="flex items-center gap-2">
-                <FileText aria-hidden="true" className="text-emerald-700" size={18} />
+                <FileText aria-hidden="true" className="text-[#7a5a00]" size={18} />
                 <h3 className="font-bold text-slate-950">요약 정리</h3>
               </div>
               <p className="mt-3 text-sm leading-6 text-slate-700">{subjectSummary.summary}</p>
@@ -169,7 +169,7 @@ function Metric({ label, value }: { label: string; value: string }) {
 
 function WrongAnswerLine({ answer }: { answer: GradedAnswer }) {
   return (
-    <article className="rounded-lg border border-rose-100 bg-rose-50 p-3">
+    <article className="rounded-lg border border-[#9B111E]/20 bg-[#9B111E]/10 p-3">
       <p className="text-sm font-bold text-slate-950">{answer.question.concept}</p>
       <p className="mt-2 text-sm leading-6 text-slate-700">{answer.explanation}</p>
     </article>

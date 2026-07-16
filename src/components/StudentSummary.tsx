@@ -9,7 +9,7 @@ export function StudentSummary() {
     <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-sky-700">{mockStudentProfile.grade}</p>
+          <p className="text-sm font-semibold text-[#9B111E]">{mockStudentProfile.grade}</p>
           <h1 className="mt-1 text-2xl font-bold text-slate-950 sm:text-3xl">
             {mockStudentProfile.name}의 학습 OS
           </h1>

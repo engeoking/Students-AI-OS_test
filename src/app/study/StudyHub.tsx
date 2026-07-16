@@ -173,7 +173,7 @@ export function StudyHub() {
                 type="button"
                 className={`focus-ring rounded-lg border px-3 py-3 text-left text-sm font-semibold ${
                   selectedSubject === subject
-                  ? "border-sky-300 bg-sky-50 text-sky-800 shadow-sm"
+                  ? "border-[#D4AF37]/70 bg-[#D4AF37]/15 text-black shadow-sm"
                   : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
                 }`}
                 onClick={() => selectSubject(subject)}
@@ -186,14 +186,14 @@ export function StudyHub() {
 
         <div className="mt-5 flex h-[38rem] max-h-[calc(100vh-13rem)] min-h-[34rem] flex-col rounded-lg border border-slate-800 bg-slate-950 p-3 text-white shadow-sm">
           <div className="flex items-center gap-2">
-            <span className="grid size-9 place-items-center rounded-lg bg-white/10 text-sky-200">
+            <span className="grid size-9 place-items-center rounded-lg bg-white/10 text-[#D4AF37]">
               <MessageCircle aria-hidden="true" size={18} />
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-semibold text-slate-300">GPT Agent Harness</p>
               <h2 className="text-base font-bold">{llmLabel}</h2>
             </div>
-            <span className="rounded-lg bg-emerald-400/10 px-2 py-1 text-xs font-bold text-emerald-200">
+            <span className="rounded-lg bg-[#D4AF37]/10 px-2 py-1 text-xs font-bold text-[#D4AF37]">
               준비됨
             </span>
           </div>
@@ -207,7 +207,7 @@ export function StudyHub() {
               <ChatBubble key={`${message.role}-${index}-${message.content}`} role={message.role} content={message.content} />
             ))}
             {isPracticeLocked ? (
-              <div className="flex items-center gap-2 rounded-lg border border-amber-300/20 bg-amber-300/10 p-3 text-xs font-semibold leading-5 text-amber-100">
+              <div className="flex items-center gap-2 rounded-lg border border-[#D4AF37]/25 bg-[#D4AF37]/10 p-3 text-xs font-semibold leading-5 text-[#D4AF37]">
                 <LockKeyhole aria-hidden="true" size={15} />
                 문제 풀이가 끝나고 채점하면 다시 질문할 수 있습니다.
               </div>
@@ -229,7 +229,7 @@ export function StudyHub() {
 
             <button
               type="button"
-              className="focus-ring mt-1 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-3 py-2 text-sm font-bold text-white hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+              className="focus-ring mt-1 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#D4AF37] px-3 py-2 text-sm font-bold text-black hover:bg-[#c6a12f] disabled:cursor-not-allowed disabled:bg-black/10 disabled:text-black/40"
               disabled={isPracticeLocked || !chatQuestion.trim()}
               onClick={askLlm}
             >
@@ -250,7 +250,7 @@ export function StudyHub() {
 
       <section className="space-y-5">
         <div className="product-card p-4 sm:p-6">
-          <p className="text-sm font-semibold text-sky-700">학습 허브</p>
+          <p className="text-sm font-semibold text-[#9B111E]">학습 허브</p>
           <div className="mt-1">
             <h2 className="text-2xl font-bold text-slate-950">{selectedSubject} 맞춤 문제 만들기</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
@@ -286,15 +286,15 @@ export function StudyHub() {
           </label>
 
           {progress ? (
-            <div className="mt-4 grid gap-3 rounded-lg border border-sky-100 bg-sky-50 p-4 md:grid-cols-3">
+            <div className="mt-4 grid gap-3 rounded-lg border border-[#D4AF37]/30 bg-[#D4AF37]/10 p-4 md:grid-cols-3">
               <ProgressLine label="입력 방식" value={progress.sourceImageName} />
               <ProgressLine label="현재 진도" value={progress.currentUnit} />
               <ProgressLine label="학습 범위" value={progress.studiedRange} />
               <div className="md:col-span-3">
-                <p className="text-xs font-semibold text-sky-700">시험 빈출 포인트</p>
+                <p className="text-xs font-semibold text-[#7a5a00]">시험 빈출 포인트</p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {progress.examFocus.map((focus) => (
-                    <span key={focus} className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-sky-800">
+                    <span key={focus} className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-[#7a5a00]">
                       {focus}
                     </span>
                   ))}
@@ -305,7 +305,7 @@ export function StudyHub() {
 
           <button
             type="button"
-            className="focus-ring mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-3 text-sm font-bold text-white hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300 sm:w-auto"
+            className="focus-ring mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#9B111E] px-4 py-3 text-sm font-bold text-white hover:bg-[#7f0e19] disabled:cursor-not-allowed disabled:bg-black/10 disabled:text-black/40 sm:w-auto"
             disabled={!progress}
             onClick={createQuestions}
           >
@@ -324,7 +324,7 @@ export function StudyHub() {
                     <span className="rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold text-slate-700">
                       문제 {index + 1}
                     </span>
-                    <span className="rounded-lg bg-amber-50 px-2 py-1 text-xs font-bold text-amber-800">
+                    <span className="rounded-lg bg-[#D4AF37]/10 px-2 py-1 text-xs font-bold text-[#7a5a00]">
                       {question.concept}
                     </span>
                   </div>
@@ -361,7 +361,7 @@ export function StudyHub() {
                   {questions.length}문제 중 {correctCount}문제 정답
                 </p>
               </div>
-              <span className="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-sm font-bold text-emerald-800">
+              <span className="inline-flex items-center gap-2 rounded-lg bg-[#D4AF37]/10 px-3 py-2 text-sm font-bold text-[#7a5a00]">
                 <Save aria-hidden="true" size={17} />
                 학습 데이터 저장됨
               </span>
@@ -372,7 +372,7 @@ export function StudyHub() {
                 <article
                   key={answer.question.id}
                   className={`rounded-lg border p-4 ${
-                    answer.isCorrect ? "border-emerald-100 bg-emerald-50" : "border-rose-100 bg-rose-50"
+                    answer.isCorrect ? "border-[#D4AF37]/30 bg-[#D4AF37]/10" : "border-[#9B111E]/20 bg-[#9B111E]/10"
                   }`}
                 >
                   <p className="text-sm font-bold text-slate-950">
@@ -385,7 +385,7 @@ export function StudyHub() {
 
             <button
               type="button"
-              className="focus-ring mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-3 text-sm font-bold text-white hover:bg-sky-700 sm:w-auto"
+              className="focus-ring mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#9B111E] px-4 py-3 text-sm font-bold text-white hover:bg-[#7f0e19] sm:w-auto"
               onClick={analyzeWeakness}
             >
               <BarChart3 aria-hidden="true" size={17} />
@@ -398,11 +398,11 @@ export function StudyHub() {
           <section className="product-card p-4 sm:p-5">
             <h2 className="text-xl font-bold text-slate-950">4. 약점 분석과 다음 진도</h2>
             <div className="mt-4 grid gap-3 lg:grid-cols-[0.4fr_0.6fr]">
-              <div className="rounded-lg border border-rose-100 bg-rose-50 p-4">
-                <p className="text-xs font-semibold text-rose-700">약점 개념</p>
+              <div className="rounded-lg border border-[#9B111E]/20 bg-[#9B111E]/10 p-4">
+                <p className="text-xs font-semibold text-[#9B111E]">약점 개념</p>
                 <div className="mt-2 flex flex-wrap gap-2">
                   {visibleWeaknessReport.weakConcepts.map((concept) => (
-                    <span key={concept} className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-rose-800">
+                    <span key={concept} className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-[#9B111E]">
                       {concept}
                     </span>
                   ))}
@@ -427,7 +427,7 @@ export function StudyHub() {
 function ProgressLine({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <p className="text-xs font-semibold text-sky-700">{label}</p>
+      <p className="text-xs font-semibold text-[#7a5a00]">{label}</p>
       <p className="mt-1 text-sm font-bold leading-6 text-slate-950">{value}</p>
     </div>
   );
