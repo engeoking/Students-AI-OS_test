@@ -1,43 +1,31 @@
-import { copyFileSync, mkdirSync, writeFileSync } from "node:fs";
+import { copyFileSync, cpSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 
 const serverEntry = join("dist", "server", "index.js");
 const hostingTarget = join("dist", ".openai", "hosting.json");
 const serverPackage = join("dist", "server", "package.json");
+const nextStaticTarget = join("dist", "_next", "static");
 
 mkdirSync(dirname(serverEntry), { recursive: true });
 mkdirSync(dirname(hostingTarget), { recursive: true });
+mkdirSync(dirname(nextStaticTarget), { recursive: true });
+
+cpSync(join("dist", "static"), nextStaticTarget, { recursive: true });
+
+const pages = {
+  "/": readFileSync(join("dist", "server", "app", "index.html"), "utf8"),
+  "/home": readFileSync(join("dist", "server", "app", "home.html"), "utf8"),
+  "/onboarding": readFileSync(join("dist", "server", "app", "onboarding.html"), "utf8"),
+  "/study": readFileSync(join("dist", "server", "app", "study.html"), "utf8"),
+  "/review": readFileSync(join("dist", "server", "app", "review.html"), "utf8"),
+  "/parent-report": readFileSync(join("dist", "server", "app", "parent-report.html"), "utf8"),
+};
+const notFoundPage = readFileSync(join("dist", "server", "app", "_not-found.html"), "utf8");
 
 writeFileSync(serverPackage, JSON.stringify({ type: "module" }, null, 2));
 
-writeFileSync(serverEntry, `import { createServer } from "node:http";
-import { readFile } from "node:fs/promises";
-import { extname, join, normalize } from "node:path";
-
-const port = Number(process.env.PORT ?? 3000);
-const hostname = "0.0.0.0";
-const root = process.cwd();
-const pageFiles = new Map([
-  ["/", "dist/server/app/index.html"],
-  ["/home", "dist/server/app/home.html"],
-  ["/onboarding", "dist/server/app/onboarding.html"],
-  ["/study", "dist/server/app/study.html"],
-  ["/review", "dist/server/app/review.html"],
-  ["/parent-report", "dist/server/app/parent-report.html"],
-]);
-const mimeTypes = new Map([
-  [".html", "text/html; charset=utf-8"],
-  [".js", "text/javascript; charset=utf-8"],
-  [".css", "text/css; charset=utf-8"],
-  [".json", "application/json; charset=utf-8"],
-  [".txt", "text/plain; charset=utf-8"],
-  [".svg", "image/svg+xml"],
-  [".png", "image/png"],
-  [".jpg", "image/jpeg"],
-  [".jpeg", "image/jpeg"],
-  [".webp", "image/webp"],
-  [".ico", "image/x-icon"],
-]);
+writeFileSync(serverEntry, `const pages = new Map(${JSON.stringify(Object.entries(pages))});
+const notFoundPage = ${JSON.stringify(notFoundPage)};
 
 function fallbackAnswer(requestBody) {
   const subject = requestBody.subject || "학습";
@@ -98,41 +86,37 @@ function extractOpenAiText(data) {
   return null;
 }
 
-function sendJson(response, status, body) {
-  response.writeHead(status, { "Content-Type": "application/json; charset=utf-8" });
-  response.end(JSON.stringify(body));
+function jsonResponse(body, status = 200) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+    },
+  });
 }
 
 async function readJsonRequest(request) {
-  const chunks = [];
-
-  for await (const chunk of request) {
-    chunks.push(chunk);
-  }
-
   try {
-    return JSON.parse(Buffer.concat(chunks).toString("utf8"));
+    return await request.json();
   } catch {
     return null;
   }
 }
 
-async function handleLlm(request, response) {
+async function handleLlm(request, env) {
   const body = await readJsonRequest(request);
   const question = typeof body?.question === "string" ? body.question.trim() : "";
   const subject = typeof body?.subject === "string" ? body.subject.trim() : "";
 
   if (!question || !subject) {
-    sendJson(response, 400, { error: "Invalid request" });
-    return;
+    return jsonResponse({ error: "Invalid request" }, 400);
   }
 
   const chatRequest = { ...body, question, subject };
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = env.OPENAI_API_KEY;
 
   if (!apiKey) {
-    sendJson(response, 200, { answer: fallbackAnswer(chatRequest), provider: "mock" });
-    return;
+    return jsonResponse({ answer: fallbackAnswer(chatRequest), provider: "mock" });
   }
 
   try {
@@ -143,7 +127,7 @@ async function handleLlm(request, response) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: process.env.OPENAI_MODEL ?? "gpt-4.1-mini",
+        model: env.OPENAI_MODEL ?? "gpt-4.1-mini",
         input: [
           { role: "system", content: systemPrompt() },
           { role: "user", content: userPrompt(chatRequest) },
@@ -153,76 +137,50 @@ async function handleLlm(request, response) {
     });
 
     if (!openAiResponse.ok) {
-      sendJson(response, 200, { answer: fallbackAnswer(chatRequest), provider: "mock" });
-      return;
+      return jsonResponse({ answer: fallbackAnswer(chatRequest), provider: "mock" });
     }
 
     const data = await openAiResponse.json();
     const answer = extractOpenAiText(data);
-    sendJson(response, 200, {
+    return jsonResponse({
       answer: answer ?? fallbackAnswer(chatRequest),
       provider: answer ? "openai" : "mock",
     });
   } catch {
-    sendJson(response, 200, { answer: fallbackAnswer(chatRequest), provider: "mock" });
+    return jsonResponse({ answer: fallbackAnswer(chatRequest), provider: "mock" });
   }
 }
 
-function resolveAssetPath(pathname) {
-  if (pathname.startsWith("/_next/static/")) {
-    return join("dist", "static", pathname.slice("/_next/static/".length));
-  }
-
-  if (pathname === "/favicon.ico") {
-    return join("public", "favicon.ico");
-  }
-
-  return null;
+function htmlResponse(html, status = 200) {
+  return new Response(html, {
+    status,
+    headers: {
+      "Cache-Control": "no-store",
+      "Content-Type": "text/html; charset=utf-8",
+    },
+  });
 }
 
-async function serveFile(filePath, response) {
-  const normalized = normalize(filePath);
-
-  if (normalized.startsWith("..")) {
-    response.writeHead(403);
-    response.end("Forbidden");
-    return;
-  }
-
-  try {
-    const absolutePath = join(root, normalized);
-    const content = await readFile(absolutePath);
-    const contentType = mimeTypes.get(extname(normalized)) ?? "application/octet-stream";
-    response.writeHead(200, {
-      "Cache-Control": normalized.includes("dist/static/") ? "public, max-age=31536000, immutable" : "no-store",
-      "Content-Type": contentType,
-    });
-    response.end(content);
-  } catch {
-    response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
-    response.end("Not found");
-  }
-}
-
-createServer(async (request, response) => {
-  const url = new URL(request.url ?? "/", \`http://\${request.headers.host ?? "localhost"}\`);
+export default {
+  async fetch(request, env) {
+  const url = new URL(request.url);
   const pathname = url.pathname.replace(/\\/$/, "") || "/";
 
   if (request.method === "POST" && pathname === "/api/llm") {
-    await handleLlm(request, response);
-    return;
+    return handleLlm(request, env ?? {});
   }
 
-  const assetPath = resolveAssetPath(url.pathname);
-  if (assetPath) {
-    await serveFile(assetPath, response);
-    return;
+  if (pages.has(pathname)) {
+    return htmlResponse(pages.get(pathname));
   }
 
-  await serveFile(pageFiles.get(pathname) ?? "dist/server/app/_not-found.html", response);
-}).listen(port, hostname, () => {
-  console.log(\`Student AI OS listening on http://\${hostname}:\${port}\`);
-});
+  if (env?.ASSETS) {
+    return env.ASSETS.fetch(request);
+  }
+
+  return htmlResponse(notFoundPage, 404);
+  },
+};
 `);
 
 copyFileSync(join(".openai", "hosting.json"), hostingTarget);
