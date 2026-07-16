@@ -19,7 +19,7 @@ describe("StudyHub", () => {
     fireEvent.change(screen.getByLabelText("LLM에게 질문"), {
       target: { value: "그래프 꼭짓점이 뭐야?" },
     });
-    fireEvent.click(screen.getByRole("button", { name: "질문하기" }));
+    fireEvent.click(screen.getByRole("button", { name: "전송" }));
     expect(screen.getByText(/시험 포인트 기준으로 정리했습니다/)).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText("오늘 배운 진도"), {

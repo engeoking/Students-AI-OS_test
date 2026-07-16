@@ -17,8 +17,8 @@ import {
 import type { GradedAnswer, LearningRun, PracticeQuestion, ProgressAnalysis, WeaknessReport } from "@/lib/types";
 
 type ChatMessage = {
-  question: string;
-  answer: string;
+  role: "user" | "assistant";
+  content: string;
 };
 
 export function StudyHub() {
@@ -134,9 +134,10 @@ export function StudyHub() {
 
     setChatMessages((current) => [
       ...current,
+      { role: "user", content: question },
       {
-        question,
-        answer: `${llmLabel}이 ${selectedSubject} 질문을 시험 포인트 기준으로 정리했습니다. 핵심 개념을 먼저 한 문장으로 말한 뒤, 조건을 표시하고, 마지막에 비슷한 유형을 한 번 더 풀어보세요.`,
+        role: "assistant",
+        content: `${llmLabel}이 ${selectedSubject} 질문을 시험 포인트 기준으로 정리했습니다. 핵심 개념을 먼저 한 문장으로 말한 뒤, 조건을 표시하고, 마지막에 비슷한 유형을 한 번 더 풀어보세요.`,
       },
     ]);
     setChatQuestion("");
@@ -160,7 +161,7 @@ export function StudyHub() {
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[18rem_1fr]">
+    <div className="grid gap-5 lg:grid-cols-[24rem_1fr]">
       <aside className="product-card p-4 lg:sticky lg:top-24 lg:self-start">
         <div>
           <p className="text-sm font-semibold text-slate-500">프로필 관심 과목</p>
@@ -183,55 +184,59 @@ export function StudyHub() {
           </div>
         </div>
 
-        <div className="mt-5 rounded-lg border border-slate-800 bg-slate-950 p-3 text-white shadow-sm">
+        <div className="mt-5 flex min-h-[34rem] flex-col rounded-lg border border-slate-800 bg-slate-950 p-3 text-white shadow-sm">
           <div className="flex items-center gap-2">
             <span className="grid size-9 place-items-center rounded-lg bg-white/10 text-sky-200">
               <MessageCircle aria-hidden="true" size={18} />
             </span>
-            <div>
-              <p className="text-xs font-semibold text-slate-300">왼쪽 LLM 질문</p>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-semibold text-slate-300">GPT Agent Harness</p>
               <h2 className="text-base font-bold">{llmLabel}</h2>
             </div>
+            <span className="rounded-lg bg-emerald-400/10 px-2 py-1 text-xs font-bold text-emerald-200">
+              준비됨
+            </span>
           </div>
 
-          <label className="mt-3 block">
-            <span className="sr-only">LLM에게 질문</span>
-            <textarea
-              aria-label="LLM에게 질문"
-              className="focus-ring min-h-24 w-full rounded-lg border border-white/10 bg-white px-3 py-2 text-sm text-slate-950 disabled:cursor-not-allowed disabled:bg-slate-200"
-              placeholder="궁금한 개념을 질문하세요"
-              value={chatQuestion}
-              disabled={isPracticeLocked}
-              onChange={(event) => setChatQuestion(event.target.value)}
+          <div className="mt-4 flex-1 space-y-3 overflow-auto rounded-lg border border-white/10 bg-black/20 p-3">
+            <ChatBubble
+              role="assistant"
+              content={`${profile.name} 학생의 ${selectedSubject} 학습을 돕는 에이전트입니다. 개념 질문은 바로 답하고, 진도 맞춤 문제를 푸는 동안에는 정답 유출 방지를 위해 잠깁니다.`}
             />
-          </label>
+            {chatMessages.map((message, index) => (
+              <ChatBubble key={`${message.role}-${index}-${message.content}`} role={message.role} content={message.content} />
+            ))}
+            {isPracticeLocked ? (
+              <div className="flex items-center gap-2 rounded-lg border border-amber-300/20 bg-amber-300/10 p-3 text-xs font-semibold leading-5 text-amber-100">
+                <LockKeyhole aria-hidden="true" size={15} />
+                문제 풀이가 끝나고 채점하면 다시 질문할 수 있습니다.
+              </div>
+            ) : null}
+          </div>
 
-          <button
-            type="button"
-            className="focus-ring mt-2 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-white px-3 py-2 text-sm font-bold text-slate-950 hover:bg-sky-50 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
-            disabled={isPracticeLocked || !chatQuestion.trim()}
-            onClick={askLlm}
-          >
-            {isPracticeLocked ? <LockKeyhole aria-hidden="true" size={16} /> : <Send aria-hidden="true" size={16} />}
-            {isPracticeLocked ? "문제 풀이 중 잠금" : "질문하기"}
-          </button>
+          <div className="mt-3 rounded-lg border border-white/10 bg-white p-2">
+            <label className="block">
+              <span className="sr-only">LLM에게 질문</span>
+              <textarea
+                aria-label="LLM에게 질문"
+                className="focus-ring min-h-20 w-full resize-none rounded-lg border-0 bg-white px-2 py-2 text-sm text-slate-950 disabled:cursor-not-allowed disabled:bg-slate-100"
+                placeholder={isPracticeLocked ? "문제 풀이 중에는 질문할 수 없습니다" : "메시지를 입력하세요"}
+                value={chatQuestion}
+                disabled={isPracticeLocked}
+                onChange={(event) => setChatQuestion(event.target.value)}
+              />
+            </label>
 
-          {isPracticeLocked ? (
-            <p className="mt-2 text-xs leading-5 text-slate-300">
-              진도 맞춤 문제를 다 풀고 채점하면 다시 질문할 수 있습니다.
-            </p>
-          ) : null}
-
-          {chatMessages.length > 0 ? (
-            <div className="mt-3 max-h-64 space-y-2 overflow-auto pr-1">
-              {chatMessages.map((message, index) => (
-                <article key={`${message.question}-${index}`} className="rounded-lg bg-white/10 p-3">
-                  <p className="text-xs font-semibold text-sky-200">Q. {message.question}</p>
-                  <p className="mt-2 text-xs leading-5 text-slate-100">{message.answer}</p>
-                </article>
-              ))}
-            </div>
-          ) : null}
+            <button
+              type="button"
+              className="focus-ring mt-1 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+              disabled={isPracticeLocked || !chatQuestion.trim()}
+              onClick={askLlm}
+            >
+              {isPracticeLocked ? <LockKeyhole aria-hidden="true" size={16} /> : <Send aria-hidden="true" size={16} />}
+              {isPracticeLocked ? "문제 풀이 중 잠금" : "전송"}
+            </button>
+          </div>
         </div>
 
         <div className="product-panel mt-5 p-3">
@@ -425,5 +430,24 @@ function ProgressLine({ label, value }: { label: string; value: string }) {
       <p className="text-xs font-semibold text-sky-700">{label}</p>
       <p className="mt-1 text-sm font-bold leading-6 text-slate-950">{value}</p>
     </div>
+  );
+}
+
+function ChatBubble({ role, content }: ChatMessage) {
+  const isUser = role === "user";
+
+  return (
+    <article className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
+      <div
+        className={`max-w-[88%] rounded-lg px-3 py-2 text-sm leading-6 ${
+          isUser
+            ? "bg-white text-slate-950"
+            : "border border-white/10 bg-white/10 text-slate-100"
+        }`}
+      >
+        <p className="text-xs font-bold opacity-70">{isUser ? "학생" : "Agent"}</p>
+        <p className="mt-1">{content}</p>
+      </div>
+    </article>
   );
 }

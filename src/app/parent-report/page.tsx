@@ -1,21 +1,23 @@
 import { TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/MetricCard";
-import { mockParentSummary } from "@/lib/mock-data";
+import { mockParentSummary, mockReviewItems, mockStudentProfile } from "@/lib/mock-data";
 import { ParentLearningHistory } from "./ParentLearningHistory";
 
 export default function ParentReportPage() {
   const maxMinutes = Math.max(...mockParentSummary.trend.map((item) => item.minutes));
+  const todayReviewCount = mockReviewItems.filter((item) => item.dueBucket === "today").length;
+  const studySubjects = mockStudentProfile.targetSubjects.slice(0, 3).join(" / ");
 
   return (
     <div className="space-y-5">
       <section className="product-card p-4 sm:p-6">
         <p className="text-sm font-semibold text-sky-700">부모 리포트</p>
-        <h1 className="mt-1 text-2xl font-bold text-slate-950">오늘의 학습 상태와 다음 액션</h1>
+        <h1 className="mt-1 text-2xl font-bold text-slate-950">오늘의 학습 상태</h1>
         <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <MetricCard label="공부 시간" value={`${mockParentSummary.studyMinutes}분`} detail="오늘 누적 시간" tone="emerald" />
           <MetricCard label="질문 수" value={`${mockParentSummary.questionCount}개`} detail="과목별 AI 라우팅 포함" tone="sky" />
-          <MetricCard label="취약 개념" value={`${mockParentSummary.weakConcepts.length}개`} detail={mockParentSummary.weakConcepts[0]} tone="rose" />
-          <MetricCard label="추세" value="상승" detail="질문과 공부 시간이 함께 증가" tone="amber" />
+          <MetricCard label="복습 수" value={`${todayReviewCount}개`} detail="오늘 확인할 항목" tone="amber" />
+          <MetricCard label="공부 과목" value={`${mockStudentProfile.targetSubjects.length}개`} detail={studySubjects} tone="rose" />
         </div>
       </section>
 

@@ -10,8 +10,11 @@ describe("ParentReportPage", () => {
   it("keeps the top report and trend graph while hiding the side summary cards", () => {
     render(<ParentReportPage />);
 
-    expect(screen.getByText("오늘의 학습 상태와 다음 액션")).toBeInTheDocument();
+    expect(screen.getByText("오늘의 학습 상태")).toBeInTheDocument();
+    expect(screen.getByText("복습 수")).toBeInTheDocument();
+    expect(screen.getByText("공부 과목")).toBeInTheDocument();
     expect(screen.getByText("최근 학습 추이")).toBeInTheDocument();
+    expect(screen.queryByText("오늘의 학습 상태와 다음 액션")).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "추천 액션" })).not.toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "요약" })).not.toBeInTheDocument();
   });
