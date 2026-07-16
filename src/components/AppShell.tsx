@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { BarChart3, BookOpenCheck, ClipboardList, GraduationCap, Home, MessageSquareText } from "lucide-react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useSyncExternalStore } from "react";
+import { isEntryGateUnlocked } from "@/lib/entry-gate";
 
 const navItems = [
   { href: "/home", label: "홈", icon: Home },
@@ -14,13 +16,28 @@ const navItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const isEntry = pathname === "/";
+  const isUnlocked = useSyncExternalStore(subscribeToEntryGate, isEntryGateUnlocked, () => false);
+  const canShowProtectedApp = isEntry || isUnlocked;
   const isHome = pathname === "/home";
   const mainClass = isEntry
     ? "bg-black"
     : isHome
       ? ""
     : "mx-auto max-w-7xl px-4 py-5 sm:px-6 lg:px-8 lg:py-8";
+
+  useEffect(() => {
+    if (canShowProtectedApp) {
+      return;
+    }
+
+    router.replace("/");
+  }, [canShowProtectedApp, router]);
+
+  if (!canShowProtectedApp) {
+    return <div className="min-h-screen bg-black" />;
+  }
 
   return (
     <div className="min-h-screen">
@@ -84,4 +101,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       {isEntry ? null : <div className="h-20 md:hidden" />}
     </div>
   );
+}
+
+function subscribeToEntryGate() {
+  return () => undefined;
 }
