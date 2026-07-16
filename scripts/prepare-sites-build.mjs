@@ -3,13 +3,16 @@ import { dirname, join } from "node:path";
 
 const serverEntry = join("dist", "server", "index.js");
 const hostingTarget = join("dist", ".openai", "hosting.json");
+const serverPackage = join("dist", "server", "package.json");
 
 mkdirSync(dirname(serverEntry), { recursive: true });
 mkdirSync(dirname(hostingTarget), { recursive: true });
 
-writeFileSync(serverEntry, `const { createServer } = require("node:http");
-const { readFile } = require("node:fs/promises");
-const { extname, join, normalize } = require("node:path");
+writeFileSync(serverPackage, JSON.stringify({ type: "module" }, null, 2));
+
+writeFileSync(serverEntry, `import { createServer } from "node:http";
+import { readFile } from "node:fs/promises";
+import { extname, join, normalize } from "node:path";
 
 const port = Number(process.env.PORT ?? 3000);
 const hostname = "0.0.0.0";
