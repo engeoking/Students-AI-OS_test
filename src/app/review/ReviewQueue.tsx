@@ -34,7 +34,7 @@ export function ReviewQueue() {
               type="button"
               className={`focus-ring rounded-lg border px-3 py-3 text-left text-sm font-semibold ${
                 selectedSubject === subject
-                  ? "border-slate-950 bg-slate-950 text-white shadow-sm"
+                  ? "border-sky-300 bg-sky-50 text-sky-800 shadow-sm"
                   : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
               }`}
               onClick={() => setSelectedSubject(subject)}

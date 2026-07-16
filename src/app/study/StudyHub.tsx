@@ -173,7 +173,7 @@ export function StudyHub() {
                 type="button"
                 className={`focus-ring rounded-lg border px-3 py-3 text-left text-sm font-semibold ${
                   selectedSubject === subject
-                  ? "border-slate-950 bg-slate-950 text-white shadow-sm"
+                  ? "border-sky-300 bg-sky-50 text-sky-800 shadow-sm"
                   : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
                 }`}
                 onClick={() => selectSubject(subject)}
@@ -184,7 +184,7 @@ export function StudyHub() {
           </div>
         </div>
 
-        <div className="mt-5 flex min-h-[34rem] flex-col rounded-lg border border-slate-800 bg-slate-950 p-3 text-white shadow-sm">
+        <div className="mt-5 flex h-[38rem] max-h-[calc(100vh-13rem)] min-h-[34rem] flex-col rounded-lg border border-slate-800 bg-slate-950 p-3 text-white shadow-sm">
           <div className="flex items-center gap-2">
             <span className="grid size-9 place-items-center rounded-lg bg-white/10 text-sky-200">
               <MessageCircle aria-hidden="true" size={18} />
@@ -198,7 +198,7 @@ export function StudyHub() {
             </span>
           </div>
 
-          <div className="mt-4 flex-1 space-y-3 overflow-auto rounded-lg border border-white/10 bg-black/20 p-3">
+          <div className="mt-4 min-h-0 flex-1 space-y-3 overflow-y-auto rounded-lg border border-white/10 bg-black/20 p-3">
             <ChatBubble
               role="assistant"
               content={`${profile.name} 학생의 ${selectedSubject} 학습을 돕는 에이전트입니다. 개념 질문은 바로 답하고, 진도 맞춤 문제를 푸는 동안에는 정답 유출 방지를 위해 잠깁니다.`}
@@ -229,7 +229,7 @@ export function StudyHub() {
 
             <button
               type="button"
-              className="focus-ring mt-1 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 px-3 py-2 text-sm font-bold text-white hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+              className="focus-ring mt-1 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-sky-600 px-3 py-2 text-sm font-bold text-white hover:bg-sky-700 disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
               disabled={isPracticeLocked || !chatQuestion.trim()}
               onClick={askLlm}
             >
@@ -267,7 +267,7 @@ export function StudyHub() {
                 교재, 노트, 문제집 페이지 사진을 올리거나 오늘 배운 내용을 직접 적어주세요.
               </p>
             </div>
-            <label className="focus-ring inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
+            <label className="focus-ring inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-800 hover:bg-slate-50">
               <ImageUp aria-hidden="true" size={17} />
               사진 선택
               <input aria-label="진도 사진 업로드" className="sr-only" type="file" accept="image/*" onChange={handleImageUpload} />
@@ -343,7 +343,7 @@ export function StudyHub() {
 
             <button
               type="button"
-              className="focus-ring mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-3 text-sm font-bold text-white hover:bg-slate-800 sm:w-auto"
+              className="focus-ring mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 bg-white px-4 py-3 text-sm font-bold text-slate-800 hover:bg-slate-50 sm:w-auto"
               onClick={gradeAnswers}
             >
               <CheckCircle2 aria-hidden="true" size={17} />

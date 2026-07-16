@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { ArrowRight, BarChart3, BookOpenCheck, PenLine } from "lucide-react";
+import { ArrowRight, BarChart3, BookOpenCheck, GraduationCap, PenLine } from "lucide-react";
 import { MetricCard } from "@/components/MetricCard";
 import { mockParentSummary, mockReviewItems } from "@/lib/mock-data";
 import { buildWrongAnswerReviews, readLearningRuns } from "@/lib/learning-storage";
@@ -27,21 +27,25 @@ export function HomeDashboard({ profile }: { profile: StudentProfile }) {
   const primaryWeakTopic = profile.weakTopics[0] ?? `${lowestSubject} 보강`;
 
   return (
-    <main className="min-h-screen bg-transparent text-slate-950">
-      <div className="mx-auto max-w-6xl space-y-5 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
-        <section className="product-card p-5 sm:p-7">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div>
-              <p className="text-sm font-semibold text-sky-700">{profile.grade}</p>
-              <h1 className="mt-2 text-2xl font-bold text-slate-950 sm:text-3xl">
-                {profile.name}의 Student AI OS
+    <main className="relative min-h-screen overflow-hidden bg-black text-white">
+      <div className="absolute inset-x-0 top-16 h-80 bg-[radial-gradient(circle_at_50%_0%,rgba(125,211,252,0.18),transparent_34rem)]" />
+      <div className="relative mx-auto max-w-6xl space-y-5 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+        <section className="overflow-hidden rounded-lg border border-white/10 bg-slate-950 p-5 shadow-2xl shadow-black/30 sm:p-7">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-3xl">
+              <div className="grid size-12 place-items-center rounded-lg bg-white text-slate-950 shadow-lg shadow-white/10">
+                <GraduationCap aria-hidden="true" size={26} />
+              </div>
+              <p className="mt-5 text-sm font-semibold text-sky-200">{profile.grade}</p>
+              <h1 className="mt-2 text-3xl font-black leading-tight text-white sm:text-5xl">
+                Student AI OS
               </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-600">
-                오늘은 {primarySubject} 중심으로 학습하고, {primaryWeakTopic}을 먼저 확인하세요.
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
+                {profile.name} 학생은 오늘 {primarySubject} 중심으로 학습하고, {primaryWeakTopic}을 먼저 확인하면 됩니다.
               </p>
             </div>
 
-            <div className="flex flex-col gap-2 sm:flex-row">
+            <div className="grid gap-2 sm:grid-cols-3 lg:min-w-[28rem]">
               <HomeAction href="/study" label="학습 시작" icon={PenLine} primary />
               <HomeAction href="/review" label="복습 큐" icon={BookOpenCheck} />
               <HomeAction href="/parent-report" label="리포트" icon={BarChart3} />
@@ -56,13 +60,13 @@ export function HomeDashboard({ profile }: { profile: StudentProfile }) {
           <MetricCard label="최저 점수" value={`${lowestSubject} ${lowestScore}점`} detail="보강 우선순위" tone="rose" />
         </section>
 
-        <section className="product-card p-4 sm:p-5">
+        <section className="rounded-lg border border-white/10 bg-white/5 p-4 text-white shadow-sm sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <p className="text-sm font-semibold text-slate-500">프로필 기준</p>
+              <p className="text-sm font-semibold text-slate-300">프로필 기준</p>
               <div className="mt-2 flex flex-wrap gap-2">
                 {profile.targetSubjects.map((subject) => (
-                  <span key={subject} className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-bold text-slate-700 ring-1 ring-slate-200">
+                  <span key={subject} className="rounded-lg border border-white/10 bg-white/10 px-3 py-2 text-xs font-bold text-slate-100">
                     {subject}
                   </span>
                 ))}
@@ -70,7 +74,7 @@ export function HomeDashboard({ profile }: { profile: StudentProfile }) {
             </div>
             <Link
               href="/onboarding"
-              className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg border border-slate-300 px-4 py-2 text-sm font-bold text-slate-800 hover:bg-slate-50"
+              className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg border border-white/20 px-4 py-2 text-sm font-bold text-white hover:bg-white/10"
             >
               프로필 수정
               <ArrowRight aria-hidden="true" size={16} />
@@ -98,8 +102,8 @@ function HomeAction({
       href={href}
       className={`focus-ring inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-bold ${
         primary
-          ? "bg-slate-950 text-white hover:bg-slate-800"
-          : "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
+          ? "bg-sky-300 text-slate-950 hover:bg-sky-200"
+          : "border border-white/20 bg-white/5 text-white hover:bg-white/10"
       }`}
     >
       <Icon aria-hidden="true" size={16} />

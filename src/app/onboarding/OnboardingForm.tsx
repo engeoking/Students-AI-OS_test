@@ -109,7 +109,7 @@ export function OnboardingForm() {
           </div>
           <button
             type="submit"
-            className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+            className="focus-ring inline-flex items-center justify-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-700"
           >
             <Save aria-hidden="true" size={17} />
             저장하고 홈으로
@@ -214,7 +214,7 @@ export function OnboardingForm() {
                 <button
                   type="button"
                   aria-label="최근 점수 과목 추가"
-                  className="focus-ring grid size-10 shrink-0 place-items-center rounded-lg bg-slate-950 text-white hover:bg-slate-800"
+                  className="focus-ring grid size-10 shrink-0 place-items-center rounded-lg border border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
                   onClick={addScoreSubject}
                 >
                   <Plus aria-hidden="true" size={18} />

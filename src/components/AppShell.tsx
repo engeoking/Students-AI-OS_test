@@ -46,7 +46,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
                   href={item.href}
                   className={`focus-ring inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition ${
                     active
-                      ? "bg-slate-950 text-white shadow-sm"
+                      ? "border border-sky-200 bg-sky-50 text-sky-800"
                       : "text-slate-600 hover:bg-slate-100 hover:text-slate-950"
                   }`}
                 >
