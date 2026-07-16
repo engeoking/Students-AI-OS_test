@@ -97,12 +97,15 @@ export function OnboardingForm() {
   }
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[0.75fr_0.25fr]">
-      <form onSubmit={handleSubmit} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <form onSubmit={handleSubmit} className="product-card p-4 sm:p-6">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="text-sm font-semibold text-sky-700">학생 온보딩</p>
+            <p className="text-sm font-bold text-sky-700">학생 온보딩</p>
             <h1 className="mt-1 text-2xl font-bold text-slate-950">학습 프로필 입력</h1>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              학습 허브와 리포트가 사용할 기본 기준만 간단히 관리합니다.
+            </p>
           </div>
           <button
             type="submit"
@@ -116,14 +119,14 @@ export function OnboardingForm() {
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <Field label="이름">
             <input
-              className="focus-ring w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="focus-ring w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
               value={profile.name}
               onChange={(event) => updateProfile("name", event.target.value)}
             />
           </Field>
           <Field label="학년">
             <select
-              className="focus-ring w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="focus-ring w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
               value={profile.grade}
               onChange={(event) => updateProfile("grade", event.target.value)}
             >
@@ -134,7 +137,7 @@ export function OnboardingForm() {
           </Field>
           <Field label="목표 과목">
             <input
-              className="focus-ring w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="focus-ring w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
               value={profile.targetSubjects.join(", ")}
               onChange={(event) =>
                 updateProfile(
@@ -146,7 +149,7 @@ export function OnboardingForm() {
           </Field>
           <Field label="시험일까지 남은 일수">
             <input
-              className="focus-ring w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="focus-ring w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
               min={0}
               type="number"
               value={profile.daysUntilExam}
@@ -155,7 +158,7 @@ export function OnboardingForm() {
           </Field>
           <Field label="시험일">
             <input
-              className="focus-ring w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="focus-ring w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
               type="date"
               value={profile.examDate}
               onChange={(event) => updateProfile("examDate", event.target.value)}
@@ -163,7 +166,7 @@ export function OnboardingForm() {
           </Field>
           <Field label="선호 학습 시간">
             <input
-              className="focus-ring w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="focus-ring w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
               value={profile.preferredStudyTime}
               onChange={(event) => updateProfile("preferredStudyTime", event.target.value)}
             />
@@ -174,16 +177,16 @@ export function OnboardingForm() {
           <Field label="최근 점수">
             <div className="grid gap-2">
               {scoreSubjects.map((subject) => (
-                <div key={subject} className="grid gap-2 rounded-lg border border-slate-200 px-3 py-2 sm:grid-cols-[1fr_0.75fr_auto]">
+                <div key={subject} className="product-panel grid gap-2 px-3 py-2 sm:grid-cols-[1fr_0.75fr_auto]">
                   <input
                     aria-label={`${subject} 과목명`}
-                    className="focus-ring min-w-0 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700"
+                    className="focus-ring min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-semibold text-slate-700"
                     defaultValue={subject}
                     onBlur={(event) => renameScoreSubject(subject, event.target.value)}
                   />
                   <input
                     aria-label={`${subject} 최근 점수`}
-                    className="focus-ring min-w-0 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                    className="focus-ring min-w-0 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
                     min={0}
                     max={100}
                     type="number"
@@ -203,7 +206,7 @@ export function OnboardingForm() {
               <div className="flex gap-2 rounded-lg border border-dashed border-slate-300 p-2">
                 <input
                   aria-label="추가할 과목명"
-                  className="focus-ring min-w-0 flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                  className="focus-ring min-w-0 flex-1 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
                   placeholder="추가 과목"
                   value={newScoreSubject}
                   onChange={(event) => setNewScoreSubject(event.target.value)}
@@ -221,7 +224,7 @@ export function OnboardingForm() {
           </Field>
           <Field label="취약 과목/취약 단원">
             <textarea
-              className="focus-ring min-h-36 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="focus-ring min-h-36 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
               value={profile.weakTopics.join("\n")}
               onChange={(event) =>
                 updateProfile(
@@ -236,7 +239,7 @@ export function OnboardingForm() {
         {saved ? <p className="mt-4 rounded-lg bg-emerald-50 px-3 py-2 text-sm font-semibold text-emerald-700">프로필이 브라우저에 저장되었습니다.</p> : null}
       </form>
 
-      <aside className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+      <aside className="product-card p-4 sm:p-5 lg:sticky lg:top-24 lg:self-start">
         <p className="text-sm font-semibold text-slate-500">현재 프로필</p>
         <h2 className="mt-2 text-xl font-bold text-slate-950">{profile.name}</h2>
         <div className="mt-4 space-y-3 text-sm">
@@ -261,7 +264,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 
 function Summary({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+    <div className="product-panel p-3">
       <span className="block text-xs font-semibold text-slate-500">{label}</span>
       <span className="mt-1 block font-semibold text-slate-950">{value}</span>
     </div>

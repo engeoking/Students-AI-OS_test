@@ -67,7 +67,7 @@ export function ParentLearningHistory() {
   }
 
   return (
-    <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+    <section className="product-card p-4 sm:p-6">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-sm font-semibold text-sky-700">날짜별 문제풀이 리포트</p>
@@ -97,8 +97,8 @@ export function ParentLearningHistory() {
                 type="button"
                 className={`focus-ring rounded-lg border px-3 py-2 text-sm font-bold ${
                   activeSubject === subject
-                    ? "border-slate-950 bg-slate-950 text-white"
-                    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                    ? "border-slate-950 bg-slate-950 text-white shadow-sm"
+                    : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
                 }`}
                 onClick={() => setSelectedSubject(subject)}
               >
@@ -108,7 +108,7 @@ export function ParentLearningHistory() {
           </div>
 
           <div className="mt-5 grid gap-4 lg:grid-cols-[0.38fr_0.62fr]">
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+            <div className="product-panel p-4">
               <div className="flex items-center gap-2">
                 <ClipboardCheck aria-hidden="true" className="text-sky-700" size={18} />
                 <h3 className="font-bold text-slate-950">{activeSubject} 풀이 결과</h3>
@@ -129,7 +129,7 @@ export function ParentLearningHistory() {
               </div>
             </div>
 
-            <div className="rounded-lg border border-slate-200 p-4">
+            <div className="rounded-lg border border-slate-200 bg-white/80 p-4">
               <div className="flex items-center gap-2">
                 <FileText aria-hidden="true" className="text-emerald-700" size={18} />
                 <h3 className="font-bold text-slate-950">요약 정리</h3>
@@ -147,7 +147,7 @@ export function ParentLearningHistory() {
           </div>
         </>
       ) : (
-        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-4">
+        <div className="product-panel mt-5 p-4">
           <p className="font-semibold text-slate-950">선택한 날짜에 저장된 문제풀이 기록이 없습니다.</p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
             학습 화면에서 진도 맞춤 문제를 풀고 채점하면 이곳에서 날짜와 과목별로 취약 개념을 확인할 수 있습니다.

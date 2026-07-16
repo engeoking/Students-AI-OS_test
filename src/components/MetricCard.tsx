@@ -10,17 +10,18 @@ export function MetricCard({
   tone?: "sky" | "emerald" | "amber" | "rose";
 }) {
   const tones = {
-    sky: "border-sky-100 bg-sky-50 text-sky-800",
-    emerald: "border-emerald-100 bg-emerald-50 text-emerald-800",
-    amber: "border-amber-100 bg-amber-50 text-amber-900",
-    rose: "border-rose-100 bg-rose-50 text-rose-800",
+    sky: "from-sky-500 text-sky-700",
+    emerald: "from-emerald-500 text-emerald-700",
+    amber: "from-amber-500 text-amber-700",
+    rose: "from-rose-500 text-rose-700",
   };
 
   return (
-    <section className={`rounded-lg border p-4 ${tones[tone]}`}>
-      <p className="text-xs font-semibold uppercase tracking-normal opacity-75">{label}</p>
-      <p className="mt-2 text-2xl font-bold">{value}</p>
-      <p className="mt-1 text-sm opacity-80">{detail}</p>
+    <section className="relative overflow-hidden rounded-lg border border-slate-200/80 bg-white p-4 shadow-sm">
+      <div className={`absolute inset-x-0 top-0 h-1 bg-gradient-to-r ${tones[tone]} to-slate-200`} />
+      <p className="text-xs font-bold text-slate-500">{label}</p>
+      <p className="mt-2 text-2xl font-black text-slate-950">{value}</p>
+      <p className={`mt-1 text-sm font-semibold ${tones[tone]}`}>{detail}</p>
     </section>
   );
 }

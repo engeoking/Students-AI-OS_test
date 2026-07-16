@@ -24,7 +24,7 @@ export function ReviewQueue() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[18rem_1fr]">
-      <aside className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm lg:sticky lg:top-24 lg:self-start">
+      <aside className="product-card p-4 lg:sticky lg:top-24 lg:self-start">
         <p className="text-sm font-semibold text-slate-500">복습 과목 선택</p>
         <h1 className="mt-1 text-2xl font-bold text-slate-950">{selectedSubject} 복습</h1>
         <div className="mt-4 grid gap-2">
@@ -34,8 +34,8 @@ export function ReviewQueue() {
               type="button"
               className={`focus-ring rounded-lg border px-3 py-3 text-left text-sm font-semibold ${
                 selectedSubject === subject
-                  ? "border-slate-950 bg-slate-950 text-white"
-                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                  ? "border-slate-950 bg-slate-950 text-white shadow-sm"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
               }`}
               onClick={() => setSelectedSubject(subject)}
             >
@@ -44,7 +44,7 @@ export function ReviewQueue() {
           ))}
         </div>
 
-        <div className="mt-5 rounded-lg border border-rose-100 bg-rose-50 p-3">
+        <div className="mt-5 rounded-lg border border-rose-100 bg-rose-50/80 p-3">
           <p className="text-xs font-semibold text-rose-700">현재 과목 오답 노트</p>
           <p className="mt-1 text-2xl font-bold text-slate-950">{wrongAnswerReviews.length}개</p>
           <p className="mt-1 text-xs leading-5 text-slate-600">
@@ -54,12 +54,12 @@ export function ReviewQueue() {
       </aside>
 
       <section className="space-y-5">
-        <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+        <section className="product-card p-4 sm:p-6">
           <p className="text-sm font-semibold text-sky-700">복습 큐</p>
           <h2 className="mt-1 text-2xl font-bold text-slate-950">약점과 오답 개념을 일정별로 관리합니다</h2>
           <div className="mt-4 grid gap-3 sm:grid-cols-4">
             {bucketOrder.map((bucket) => (
-              <div key={bucket} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <div key={bucket} className="product-panel p-3">
                 <p className="text-xs font-semibold text-slate-500">{reviewBucketLabels[bucket]}</p>
                 <p className="mt-1 text-2xl font-bold text-slate-950">{grouped[bucket].length}</p>
               </div>
@@ -67,7 +67,7 @@ export function ReviewQueue() {
           </div>
         </section>
 
-        <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+        <section className="product-card p-4 sm:p-5">
           <div className="flex items-center gap-2">
             <span className="grid size-9 place-items-center rounded-lg bg-rose-50 text-rose-700">
               <NotebookText aria-hidden="true" size={18} />
@@ -81,7 +81,7 @@ export function ReviewQueue() {
           {wrongAnswerReviews.length > 0 ? (
             <div className="mt-4 space-y-3">
               {wrongAnswerReviews.map((review) => (
-                <article key={review.id} className="rounded-lg border border-rose-100 bg-rose-50 p-4">
+                <article key={review.id} className="rounded-lg border border-rose-100 bg-rose-50/80 p-4">
                   <div className="flex flex-wrap gap-2">
                     <span className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-rose-800">{review.concept}</span>
                     <span className="rounded-lg bg-white px-2 py-1 text-xs font-bold text-slate-700">
@@ -116,7 +116,7 @@ export function ReviewQueue() {
 
         <section className="grid gap-4 lg:grid-cols-4">
           {bucketOrder.map((bucket) => (
-            <div key={bucket} className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+          <div key={bucket} className="product-card p-4">
               <div className="flex items-center gap-2">
                 <span className="grid size-9 place-items-center rounded-lg bg-slate-100 text-slate-700">
                   <BookOpenCheck aria-hidden="true" size={18} />
@@ -125,7 +125,7 @@ export function ReviewQueue() {
               </div>
               <div className="mt-4 space-y-3">
                 {grouped[bucket].map((item) => (
-                  <article key={item.id} className="rounded-lg border border-slate-200 p-3">
+                  <article key={item.id} className="rounded-lg border border-slate-200 bg-white/70 p-3">
                     <p className="text-sm font-semibold text-slate-950">{item.topic}</p>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <span className="rounded-lg bg-sky-50 px-2 py-1 text-xs font-semibold text-sky-700">{item.source}</span>

@@ -161,7 +161,7 @@ export function StudyHub() {
 
   return (
     <div className="grid gap-5 lg:grid-cols-[18rem_1fr]">
-      <aside className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm lg:sticky lg:top-24 lg:self-start">
+      <aside className="product-card p-4 lg:sticky lg:top-24 lg:self-start">
         <div>
           <p className="text-sm font-semibold text-slate-500">프로필 관심 과목</p>
           <h1 className="mt-1 text-2xl font-bold text-slate-950">학습 과목 선택</h1>
@@ -172,8 +172,8 @@ export function StudyHub() {
                 type="button"
                 className={`focus-ring rounded-lg border px-3 py-3 text-left text-sm font-semibold ${
                   selectedSubject === subject
-                    ? "border-slate-950 bg-slate-950 text-white"
-                    : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                  ? "border-slate-950 bg-slate-950 text-white shadow-sm"
+                  : "border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50"
                 }`}
                 onClick={() => selectSubject(subject)}
               >
@@ -183,7 +183,7 @@ export function StudyHub() {
           </div>
         </div>
 
-        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-950 p-3 text-white">
+        <div className="mt-5 rounded-lg border border-slate-800 bg-slate-950 p-3 text-white shadow-sm">
           <div className="flex items-center gap-2">
             <span className="grid size-9 place-items-center rounded-lg bg-white/10 text-sky-200">
               <MessageCircle aria-hidden="true" size={18} />
@@ -234,7 +234,7 @@ export function StudyHub() {
           ) : null}
         </div>
 
-        <div className="mt-5 rounded-lg border border-slate-200 bg-slate-50 p-3">
+        <div className="product-panel mt-5 p-3">
           <p className="text-xs font-semibold text-slate-500">저장된 학습 데이터</p>
           <p className="mt-1 text-lg font-bold text-slate-950">{savedRuns.length}회</p>
           <p className="mt-1 text-xs leading-5 text-slate-600">
@@ -244,7 +244,7 @@ export function StudyHub() {
       </aside>
 
       <section className="space-y-5">
-        <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
+        <div className="product-card p-4 sm:p-6">
           <p className="text-sm font-semibold text-sky-700">학습 허브</p>
           <div className="mt-1">
             <h2 className="text-2xl font-bold text-slate-950">{selectedSubject} 맞춤 문제 만들기</h2>
@@ -254,7 +254,7 @@ export function StudyHub() {
           </div>
         </div>
 
-        <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+        <section className="product-card p-4 sm:p-5">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
               <h2 className="text-xl font-bold text-slate-950">1. 오늘 배운 진도 입력</h2>
@@ -310,11 +310,11 @@ export function StudyHub() {
         </section>
 
         {questions.length > 0 ? (
-          <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+          <section className="product-card p-4 sm:p-5">
             <h2 className="text-xl font-bold text-slate-950">2. 예상 문제 풀이</h2>
             <div className="mt-4 space-y-4">
               {questions.map((question, index) => (
-                <article key={question.id} className="rounded-lg border border-slate-200 p-4">
+                <article key={question.id} className="rounded-lg border border-slate-200 bg-white/80 p-4">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="rounded-lg bg-slate-100 px-2 py-1 text-xs font-bold text-slate-700">
                       문제 {index + 1}
@@ -348,7 +348,7 @@ export function StudyHub() {
         ) : null}
 
         {gradedAnswers.length > 0 ? (
-          <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+          <section className="product-card p-4 sm:p-5">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 className="text-xl font-bold text-slate-950">3. 채점 결과와 오답 해설</h2>
@@ -390,7 +390,7 @@ export function StudyHub() {
         ) : null}
 
         {visibleWeaknessReport ? (
-          <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm sm:p-5">
+          <section className="product-card p-4 sm:p-5">
             <h2 className="text-xl font-bold text-slate-950">4. 약점 분석과 다음 진도</h2>
             <div className="mt-4 grid gap-3 lg:grid-cols-[0.4fr_0.6fr]">
               <div className="rounded-lg border border-rose-100 bg-rose-50 p-4">
