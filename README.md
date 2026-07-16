@@ -6,7 +6,7 @@
 
 - `task-001-responsive-mvp` 브랜치/worktree에서 1차 반응형 웹 MVP 구현
 - Next.js + TypeScript + Tailwind CSS 기반 앱 스캐폴드 완료
-- 실제 AI API 없이 mock 데이터와 mock 라우팅으로 핵심 제품 흐름 검증 가능
+- OpenAI API 키가 없으면 mock 응답으로 동작하고, `OPENAI_API_KEY`가 있으면 학습 허브 채팅이 GPT 응답으로 전환됨
 
 ## 왜 이 프로젝트를 하는가
 
@@ -23,7 +23,7 @@
 
 - `/`: 제품 소개, 현재 학생 요약, 핵심 화면 이동 CTA, 최근 학습 메모리
 - `/onboarding`: 학생 프로필 입력/수정, 브라우저 localStorage 저장
-- `/study`: 질문 입력, 추천 AI 라벨, mock 답변, 복습 항목 생성
+- `/study`: 질문 입력, 추천 AI 라벨, GPT 또는 mock 답변, 복습 항목 생성
 - `/review`: 오늘/내일/7일 후/시험 전 복습 큐
 - `/parent-report`: 공부 시간, 질문 수, 취약 개념, 추천 액션, 최근 추이
 
@@ -35,6 +35,19 @@ npm run dev
 ```
 
 로컬 기본 주소는 `http://localhost:3000`이다. 다른 프로세스가 3000번 포트를 사용하면 Next.js가 대체 포트를 안내한다.
+
+## GPT 연결
+
+학습 허브의 LLM 채팅은 `/api/llm` 서버 라우트를 통해 OpenAI Responses API를 호출한다. API 키는 브라우저에 노출하지 않고 서버 환경변수로만 설정한다.
+
+```bash
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-4.1-mini
+```
+
+- `OPENAI_API_KEY`가 없으면 기존 mock 응답으로 안전하게 fallback한다.
+- `OPENAI_MODEL`은 선택값이며, 운영 중 모델을 바꿀 때 환경변수만 수정하면 된다.
+- 실제 키 값은 `.env`, 문서, 코드, 커밋에 저장하지 않는다.
 
 ## 검증 방법
 

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import { BarChart3, CheckCircle2, ClipboardCheck, ImageUp, LockKeyhole, MessageCircle, Save, Send } from "lucide-react";
 import { readLearningRuns, saveLearningRun } from "@/lib/learning-storage";
+import { buildFallbackLlmAnswer, createLlmRequestFromProfile, type LlmChatResponse } from "@/lib/llm";
 import { readProfileOrMock } from "@/lib/profile-storage";
 import {
   analyzeProgressFromUpload,
@@ -34,6 +35,7 @@ export function StudyHub() {
   const [savedRuns, setSavedRuns] = useState<LearningRun[]>(() => readLearningRuns());
   const [chatQuestion, setChatQuestion] = useState("");
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [isChatPending, setIsChatPending] = useState(false);
 
   const correctCount = gradedAnswers.filter((answer) => answer.isCorrect).length;
   const llmLabel = `${aiLabelsBySubject[selectedSubject] ?? "Study Coach"} LLM`;
@@ -126,21 +128,55 @@ export function StudyHub() {
     persistRun(progress, questions, gradedAnswers, nextReport);
   }
 
-  function askLlm() {
+  async function askLlm() {
     const question = chatQuestion.trim();
-    if (!question || isPracticeLocked) {
+    if (!question || isPracticeLocked || isChatPending) {
       return;
     }
+
+    const request = createLlmRequestFromProfile(question, selectedSubject, profile, progress);
+    const pendingMessage = "답변을 준비하고 있습니다.";
 
     setChatMessages((current) => [
       ...current,
       { role: "user", content: question },
-      {
-        role: "assistant",
-        content: `${llmLabel}이 ${selectedSubject} 질문을 시험 포인트 기준으로 정리했습니다. 핵심 개념을 먼저 한 문장으로 말한 뒤, 조건을 표시하고, 마지막에 비슷한 유형을 한 번 더 풀어보세요.`,
-      },
+      { role: "assistant", content: pendingMessage },
     ]);
     setChatQuestion("");
+    setIsChatPending(true);
+
+    try {
+      const response = await fetch("/api/llm", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(request),
+      });
+      const data = await response.json() as Partial<LlmChatResponse>;
+      const answer = response.ok && typeof data.answer === "string"
+        ? data.answer
+        : buildFallbackLlmAnswer(request);
+      replacePendingChatMessage(pendingMessage, answer);
+    } catch {
+      replacePendingChatMessage(pendingMessage, buildFallbackLlmAnswer(request));
+    } finally {
+      setIsChatPending(false);
+    }
+  }
+
+  function replacePendingChatMessage(pendingMessage: string, answer: string) {
+    setChatMessages((current) => {
+      const next = [...current];
+      const pendingIndex = next.findLastIndex((message) => message.role === "assistant" && message.content === pendingMessage);
+
+      if (pendingIndex === -1) {
+        return [...next, { role: "assistant", content: answer }];
+      }
+
+      next[pendingIndex] = { role: "assistant", content: answer };
+      return next;
+    });
   }
 
   function persistRun(
@@ -194,7 +230,7 @@ export function StudyHub() {
               <h2 className="text-base font-bold">{llmLabel}</h2>
             </div>
             <span className="rounded-lg bg-[#D4AF37]/10 px-2 py-1 text-xs font-bold text-[#D4AF37]">
-              준비됨
+              {isChatPending ? "응답 중" : "준비됨"}
             </span>
           </div>
 
@@ -222,7 +258,7 @@ export function StudyHub() {
                 className="focus-ring min-h-20 w-full resize-none rounded-lg border-0 bg-white px-2 py-2 text-sm text-slate-950 disabled:cursor-not-allowed disabled:bg-slate-100"
                 placeholder={isPracticeLocked ? "문제 풀이 중에는 질문할 수 없습니다" : "메시지를 입력하세요"}
                 value={chatQuestion}
-                disabled={isPracticeLocked}
+                disabled={isPracticeLocked || isChatPending}
                 onChange={(event) => setChatQuestion(event.target.value)}
               />
             </label>
@@ -230,11 +266,11 @@ export function StudyHub() {
             <button
               type="button"
               className="focus-ring mt-1 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#D4AF37] px-3 py-2 text-sm font-bold text-black hover:bg-[#c6a12f] disabled:cursor-not-allowed disabled:bg-black/10 disabled:text-black/40"
-              disabled={isPracticeLocked || !chatQuestion.trim()}
+              disabled={isPracticeLocked || isChatPending || !chatQuestion.trim()}
               onClick={askLlm}
             >
               {isPracticeLocked ? <LockKeyhole aria-hidden="true" size={16} /> : <Send aria-hidden="true" size={16} />}
-              {isPracticeLocked ? "문제 풀이 중 잠금" : "전송"}
+              {isPracticeLocked ? "문제 풀이 중 잠금" : isChatPending ? "응답 중" : "전송"}
             </button>
           </div>
         </div>

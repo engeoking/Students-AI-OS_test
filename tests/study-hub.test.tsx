@@ -1,10 +1,17 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { StudyHub } from "@/app/study/StudyHub";
 
 describe("StudyHub", () => {
   beforeEach(() => {
     window.localStorage.clear();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        answer: "수학 튜터가 시험 포인트 기준으로 정리했습니다.",
+        provider: "mock",
+      }),
+    }));
   });
 
   it("runs the mock upload, exam question, grading, and weakness workflow", async () => {
@@ -20,7 +27,7 @@ describe("StudyHub", () => {
       target: { value: "그래프 꼭짓점이 뭐야?" },
     });
     fireEvent.click(screen.getByRole("button", { name: "전송" }));
-    expect(screen.getByText(/시험 포인트 기준으로 정리했습니다/)).toBeInTheDocument();
+    expect(await screen.findByText(/시험 포인트 기준으로 정리했습니다/)).toBeInTheDocument();
 
     fireEvent.change(screen.getByLabelText("오늘 배운 진도"), {
       target: { value: "이차방정식 활용 문제에서 문장 조건을 식으로 세우는 방법" },
